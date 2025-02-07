@@ -18,3 +18,9 @@ variable "resource_group_name" {
   description = "Name of resource group to provision resources."
   default     = "development"
 }
+
+variable "code_engine_project_name" {
+  type        = string
+  description = "Name for the CodeEngine project which holds the applications"
+  default     = "mvp-development"
+}

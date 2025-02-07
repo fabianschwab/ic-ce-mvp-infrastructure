@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     ibm = {
-      source = "IBM-Cloud/ibm"
+      source  = "IBM-Cloud/ibm"
       version = "1.75.1"
     }
   }
@@ -13,5 +13,10 @@ provider "ibm" {
 }
 
 resource "ibm_resource_group" "group" {
-  name     = var.resource_group_name
+  name = var.resource_group_name
+}
+
+resource "ibm_code_engine_project" "code_engine_project" {
+  name              = var.code_engine_project_name
+  resource_group_id = data.ibm_resource_group.group.id
 }
