@@ -18,5 +18,5 @@ resource "ibm_resource_group" "group" {
 
 resource "ibm_code_engine_project" "code_engine_project" {
   name              = var.code_engine_project_name
-  resource_group_id = data.ibm_resource_group.group.id
+  resource_group_id = ibm_resource_group.group.id
 }
