@@ -20,3 +20,14 @@ resource "ibm_code_engine_project" "code_engine_project" {
   name              = var.code_engine_project_name
   resource_group_id = ibm_resource_group.group.id
 }
+
+resource "ibm_cr_namespace" "icr_namespace" {
+  name              = var.container_registry_name
+  resource_group_id = ibm_resource_group.group.id
+}
+
+resource "ibm_cr_retention_policy" "cr_retention_policy" {
+  namespace       = ibm_cr_namespace.icr_namespace
+  images_per_repo = 10
+  retain_untagged = false
+}

@@ -5,6 +5,7 @@
 variable "ibm_cloud_api_key" {
   type        = string
   description = "IAM API Key"
+  sensitive   = true
 }
 
 variable "ibm_region" {
@@ -23,4 +24,10 @@ variable "code_engine_project_name" {
   type        = string
   description = "Name for the CodeEngine project which holds the applications"
   default     = "mvp-development"
+}
+
+variable "container_registry_name" {
+  type        = string
+  description = "Name for the CodeEngine project which holds the applications"
+  default     = "mvp-images"
 }
