@@ -27,7 +27,7 @@ resource "ibm_cr_namespace" "icr_namespace" {
 }
 
 resource "ibm_cr_retention_policy" "cr_retention_policy" {
-  namespace       = ibm_cr_namespace.icr_namespace
+  namespace       = ibm_cr_namespace.icr_namespace.name
   images_per_repo = 10
   retain_untagged = false
 }
