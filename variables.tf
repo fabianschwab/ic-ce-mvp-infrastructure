@@ -31,3 +31,25 @@ variable "container_registry_name" {
   description = "Name for the CodeEngine project which holds the applications"
   default     = "mvp-images"
 }
+
+variable "pg_database_name" {
+  type        = string
+  description = "Name of the PostgreSQL database service"
+  default     = "mvp-database"
+}
+
+variable "pg_admin_password" {
+  type        = string
+  description = "Admin password for the PostgreSQL database"
+  sensitive   = true
+}
+
+variable "pg_database_endpoint" {
+  description = "Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'."
+  type        = string
+  default     = "private"
+  validation {
+    condition     = contains(["private", "public", "public-and-private"], var.pg_database_endpoint)
+    error_message = "Invalid value! Allowed values: 'private', 'public', 'public-and-private'."
+  }
+}

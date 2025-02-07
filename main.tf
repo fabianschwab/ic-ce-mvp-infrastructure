@@ -31,3 +31,25 @@ resource "ibm_cr_retention_policy" "cr_retention_policy" {
   images_per_repo = 10
   retain_untagged = false
 }
+
+resource "ibm_database" "pg_database" {
+  name          = var.pg_database_name
+  service       = "databases-for-postgresql"
+  plan          = "standard"
+  adminpassword = var.pg_admin_password
+
+  resource_group_id = ibm_resource_group.group.id
+  location          = var.ibm_region
+
+  service_endpoints = var.pg_database_endpoint
+
+  group {
+    group_id = "member"
+    host_flavor {
+      id = "multitenant"
+    }
+    disk {
+      allocation_mb = 5120
+    }
+  }
+}
