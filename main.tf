@@ -53,3 +53,9 @@ resource "ibm_database" "pg_database" {
     }
   }
 }
+
+# Service Credentials (Resource Key)
+resource "ibm_resource_key" "pg_credentials" {
+  name                 = "pg-service-credentials"
+  resource_instance_id = ibm_database.pg_database.id
+}
