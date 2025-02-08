@@ -53,3 +53,9 @@ variable "pg_database_endpoint" {
     error_message = "Invalid value! Allowed values: 'private', 'public', 'public-and-private'."
   }
 }
+
+variable "toolchain" {
+  type        = string
+  description = "Name of the automation Toolchain"
+  default     = "code-engine-deployment"
+}
