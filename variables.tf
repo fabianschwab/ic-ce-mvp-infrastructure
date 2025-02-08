@@ -59,3 +59,8 @@ variable "toolchain" {
   description = "Name of the automation Toolchain"
   default     = "code-engine-deployment"
 }
+
+variable "tekton_repo" {
+  type        = string
+  description = "URL of the Tekton pipeline repository"
+}
