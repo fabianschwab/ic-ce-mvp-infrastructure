@@ -64,6 +64,19 @@ resource "ibm_cd_toolchain" "ci_cd_toolchain" {
   resource_group_id = ibm_resource_group.group.id
 }
 
+resource "ibm_cd_toolchain_tool_pipeline" "ci_cd_pipeline" {
+  parameters {
+    name = "ci_cd_pipeline"
+  }
+  toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
+}
+
+resource "ibm_cd_tekton_pipeline" "tekton_pipeline" {
+  worker {
+    id = "public"
+  }
+  pipeline_id = ibm_cd_toolchain_tool_pipeline.ci_cd_pipeline.tool_id
+}
 
 # Connect a git repository to the toolchain
 resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_repository" {
