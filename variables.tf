@@ -60,7 +60,7 @@ variable "toolchain" {
   default     = "code-engine-deployment"
 }
 
-variable "tekton_repo" {
+variable "git_repository_url" {
   type        = string
-  description = "URL of the Tekton pipeline repository"
+  description = "URL of the code repository the pipeline should build"
 }

@@ -66,14 +66,14 @@ resource "ibm_cd_toolchain" "ci_cd_toolchain" {
 
 
 # Connect a git repository to the toolchain
-resource "ibm_cd_toolchain_tool_hostedgit" "tekton_repository" {
+resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_repository" {
 
   toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
   initialization {
     type     = "link"
-    repo_url = "https://github.com/fabianschwab/ic-ce-mvp-infrastructure.git"
+    repo_url = var.git_repository_url
   }
   parameters {
-    repo_url = "https://github.com/fabianschwab/ic-ce-mvp-infrastructure.git"
+    repo_url = var.git_repository_url
   }
 }
