@@ -95,6 +95,19 @@ resource "ibm_cd_tekton_pipeline" "tekton_pipeline" {
   pipeline_id = ibm_cd_toolchain_tool_pipeline.ci_cd_pipeline.tool_id
 }
 
+# Pipeline definition, this holds the Tekton files of the build pipeline
+resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance" {
+  pipeline_id = ibm_cd_toolchain_tool_pipeline.ci_cd_pipeline.id
+  source {
+    type = "git"
+    properties {
+      url    = var.git_repository_url
+      branch = "main"
+      path   = "./tekton"
+    }
+  }
+}
+
 # Tekton runner instance for Tekton pipelines (shared)
 resource "ibm_resource_instance" "cd_service_instance" {
   name              = "cd-service-worker"
