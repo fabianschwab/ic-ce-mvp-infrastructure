@@ -59,11 +59,28 @@ resource "ibm_resource_key" "pg_credentials" {
   resource_instance_id = ibm_database.pg_database.id
 }
 
+# -----------------------------------------------------------
+# ------------------------ Toolchain ------------------------
+
 resource "ibm_cd_toolchain" "ci_cd_toolchain" {
   name              = var.toolchain
   resource_group_id = ibm_resource_group.group.id
 }
 
+# Repository: Connect a git repository to the toolchain
+resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_repository" {
+
+  toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
+  initialization {
+    type     = "link"
+    repo_url = var.git_repository_url
+  }
+  parameters {
+    repo_url = var.git_repository_url
+  }
+}
+
+# Delivery: Pipeline
 resource "ibm_cd_toolchain_tool_pipeline" "ci_cd_pipeline" {
   parameters {
     name = "ci_cd_pipeline"
@@ -78,15 +95,11 @@ resource "ibm_cd_tekton_pipeline" "tekton_pipeline" {
   pipeline_id = ibm_cd_toolchain_tool_pipeline.ci_cd_pipeline.tool_id
 }
 
-# Connect a git repository to the toolchain
-resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_repository" {
-
-  toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
-  initialization {
-    type     = "link"
-    repo_url = var.git_repository_url
-  }
-  parameters {
-    repo_url = var.git_repository_url
-  }
+# Tekton runner instance for Tekton pipelines (shared)
+resource "ibm_resource_instance" "cd_service_instance" {
+  name              = "cd-service-worker"
+  service           = "continuous-delivery"
+  plan              = "lite"
+  location          = var.ibm_region
+  resource_group_id = ibm_resource_group.group.id
 }
