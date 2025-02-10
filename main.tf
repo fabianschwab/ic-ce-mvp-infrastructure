@@ -102,7 +102,7 @@ resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_inst
   source {
     type = "git"
     properties {
-      url    = var.git_repository_url
+      url    = "https://github.com/fabianschwab/ic-ce-tekton-pipeline"
       branch = "main"
       path   = "./tekton/tasks"
     }
@@ -113,7 +113,7 @@ resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_inst
   source {
     type = "git"
     properties {
-      url    = var.git_repository_url
+      url    = "https://github.com/fabianschwab/ic-ce-tekton-pipeline.git"
       branch = "main"
       path   = "./tekton/cicd"
     }
