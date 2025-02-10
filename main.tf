@@ -97,14 +97,25 @@ resource "ibm_cd_tekton_pipeline" "tekton_pipeline" {
 }
 
 # Pipeline definition, this holds the Tekton files of the build pipeline
-resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance" {
+resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance_tasks" {
   pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
   source {
     type = "git"
     properties {
       url    = var.git_repository_url
       branch = "main"
-      path   = "./tekton"
+      path   = "./tekton/tasks"
+    }
+  }
+}
+resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance_cicd" {
+  pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
+  source {
+    type = "git"
+    properties {
+      url    = var.git_repository_url
+      branch = "main"
+      path   = "./tekton/cicd"
     }
   }
 }
