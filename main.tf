@@ -88,6 +88,7 @@ resource "ibm_cd_toolchain_tool_pipeline" "ci_cd_pipeline" {
   toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
 }
 
+# Pipeline type Tekton inside the pipeline
 resource "ibm_cd_tekton_pipeline" "tekton_pipeline" {
   worker {
     id = "public"
@@ -97,7 +98,7 @@ resource "ibm_cd_tekton_pipeline" "tekton_pipeline" {
 
 # Pipeline definition, this holds the Tekton files of the build pipeline
 resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance" {
-  pipeline_id = ibm_cd_toolchain_tool_pipeline.ci_cd_pipeline.id
+  pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
   source {
     type = "git"
     properties {
