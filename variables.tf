@@ -64,3 +64,9 @@ variable "git_repository_url" {
   type        = string
   description = "URL of the code repository the pipeline should build"
 }
+
+variable "tekton_repo" {
+  type        = string
+  description = "dunno"
+  default     = "test to fix warning"
+}
