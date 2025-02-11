@@ -96,7 +96,7 @@ resource "ibm_cd_tekton_pipeline" "tekton_pipeline" {
   pipeline_id = ibm_cd_toolchain_tool_pipeline.ci_cd_pipeline.tool_id
 }
 
-# Pipeline definition, this holds the Tekton files of the build pipeline
+# Tekton pipeline definition, this holds the Tekton files of the build pipeline
 resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance_tasks" {
   pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
   source {
