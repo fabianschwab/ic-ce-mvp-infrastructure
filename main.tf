@@ -88,7 +88,7 @@ resource "ibm_cd_toolchain_tool_pipeline" "ci_cd_pipeline" {
   toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
 }
 
-# Pipeline type Tekton inside the pipeline
+# ------------------------ Tekton Pipeline ------------------------
 resource "ibm_cd_tekton_pipeline" "tekton_pipeline" {
   worker {
     id = "public"
@@ -120,7 +120,15 @@ resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_inst
   }
 }
 
-# Tekton runner instance for Tekton pipelines (shared)
+resource "ibm_cd_tekton_pipeline_trigger" "cd_tekton_pipeline_trigger_manual" {
+  event_listener      = "manual-run"
+  max_concurrent_runs = 3
+  name                = "Manual Trigger"
+  pipeline_id         = ibm_cd_tekton_pipeline.tekton_pipeline.id
+  type                = "manual"
+}
+
+# Tekton runner instance for Tekton pipelines execution on IBM Cloud (shared)
 resource "ibm_resource_instance" "cd_service_instance" {
   name              = "cd-service-worker"
   service           = "continuous-delivery"
