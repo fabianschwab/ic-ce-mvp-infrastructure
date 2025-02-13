@@ -153,6 +153,50 @@ resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_inst
     }
   }
 }
+resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance_common_02" {
+  pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
+  source {
+    type = "git"
+    properties {
+      url    = var.repository_url_pipeline_catalog
+      branch = "main"
+      path   = "./git"
+    }
+  }
+}
+resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance_common_03" {
+  pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
+  source {
+    type = "git"
+    properties {
+      url    = var.repository_url_pipeline_catalog
+      branch = "main"
+      path   = "./container-registry"
+    }
+  }
+}
+resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance_common_04" {
+  pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
+  source {
+    type = "git"
+    properties {
+      url    = var.repository_url_pipeline_catalog
+      branch = "main"
+      path   = "./linter"
+    }
+  }
+}
+resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance_common_05" {
+  pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
+  source {
+    type = "git"
+    properties {
+      url    = var.repository_url_pipeline_catalog
+      branch = "main"
+      path   = "./tester"
+    }
+  }
+}
 
 # ------------------------ Tekton Trigger ------------------------
 resource "ibm_cd_tekton_pipeline_trigger" "cd_tekton_pipeline_trigger_manual" {
