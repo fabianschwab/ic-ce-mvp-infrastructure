@@ -60,6 +60,11 @@ variable "toolchain" {
   default     = "code-engine-deployment"
 }
 
+variable "code_repository_url" {
+  type        = string
+  description = "URL of the code repository to build"
+}
+
 variable "repository_url_pipeline" {
   type        = string
   description = "URL of the code repository the pipeline should build"

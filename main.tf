@@ -79,6 +79,28 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_repository" {
     repo_url = var.repository_url_pipeline
   }
 }
+resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_catalog" {
+
+  toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
+  initialization {
+    type     = "link"
+    repo_url = var.repository_url_pipeline_catalog
+  }
+  parameters {
+    repo_url = var.repository_url_pipeline_catalog
+  }
+}
+resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
+
+  toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
+  initialization {
+    type     = "link"
+    repo_url = var.code_repository_url
+  }
+  parameters {
+    repo_url = var.code_repository_url
+  }
+}
 
 # Delivery: Pipeline
 resource "ibm_cd_toolchain_tool_pipeline" "ci_cd_pipeline" {
@@ -120,6 +142,17 @@ resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_inst
     }
   }
 }
+resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_instance_common_01" {
+  pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
+  source {
+    type = "git"
+    properties {
+      url    = var.repository_url_pipeline_catalog
+      branch = "main"
+      path   = "./toolchain"
+    }
+  }
+}
 
 # ------------------------ Tekton Trigger ------------------------
 resource "ibm_cd_tekton_pipeline_trigger" "cd_tekton_pipeline_trigger_manual" {
@@ -135,6 +168,7 @@ resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_00" {
   name        = "repository"
   pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
   type        = "text"
+  value       = var.code_repository_url
 }
 resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_01" {
   name        = "apikey"
