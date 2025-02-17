@@ -59,6 +59,17 @@ resource "ibm_resource_key" "pg_credentials" {
   resource_instance_id = ibm_database.pg_database.id
 }
 
+resource "ibm_code_engine_secret" "code_engine_secrets" {
+  project_id = ibm_code_engine_project.code_engine_project.id
+  name       = "terraform-generated-secrets"
+  format     = "generic"
+
+  data = {
+    POSTGRESQL = jsondecode(ibm_resource_key.pg_credentials.credentials_json).connection.postgres.composed[0]
+    # Add more KEY = value if necessary
+  }
+}
+
 # -----------------------------------------------------------
 # ------------------------ Toolchain ------------------------
 # -----------------------------------------------------------
@@ -347,7 +358,7 @@ resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_22" {
   name        = "env-from-secrets"
   pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
   type        = "text"
-  value       = ""
+  value       = ibm_code_engine_secret.code_engine_secrets.name
 }
 resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_23" {
   name        = "git-token"
