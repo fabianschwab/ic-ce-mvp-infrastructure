@@ -105,11 +105,14 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
 
   toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
   initialization {
-    type     = "link"
+    git_id   = "integrated"
     repo_url = var.code_repository_url
+    type     = "link"
   }
   parameters {
+    git_id   = "integrated"
     repo_url = var.code_repository_url
+    type     = "link"
   }
 }
 
