@@ -428,6 +428,7 @@ resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_33" {
   name        = "toolchain-apikey"
   pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
   type        = "secure"
+  value       = var.ibm_cloud_api_key
 }
 resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_34" {
   name        = "wait-timeout"
