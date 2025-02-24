@@ -21,16 +21,15 @@ resource "ibm_code_engine_project" "code_engine_project" {
   resource_group_id = ibm_resource_group.group.id
 }
 
+resource "random_id" "unique_id" {
+  byte_length = 4
+}
 resource "ibm_cr_namespace" "icr_namespace" {
-  name              = var.container_registry_name
+  name              = "${var.container_registry_name}-${random_id.unique_id.hex}"
   resource_group_id = ibm_resource_group.group.id
 }
 
-resource "ibm_cr_retention_policy" "cr_retention_policy" {
-  namespace       = ibm_cr_namespace.icr_namespace.name
-  images_per_repo = 10
-  retain_untagged = false
-}
+
 
 resource "ibm_database" "pg_database" {
   name          = var.pg_database_name
@@ -406,7 +405,7 @@ resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_27" {
   name        = "registry-namespace"
   pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
   type        = "text"
-  value       = var.container_registry_name
+  value       = ibm_cr_namespace.icr_namespace.name
   locked      = true
 }
 resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_28" {

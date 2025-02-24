@@ -58,6 +58,7 @@ It sets up the following resources:
 - Resource Group
 - Container Registry Namespace
   - Retention Policy (10 images per repository)
+  - The name has a random suffix to avoid name collisions
 - PostgreSQL Instance
   - Service Credentials
 - Code Engine Project
