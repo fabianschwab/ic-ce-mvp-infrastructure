@@ -215,10 +215,25 @@ resource "ibm_cd_tekton_pipeline_definition" "cd_tekton_pipeline_definition_inst
 # ------------------------ Tekton Trigger ------------------------
 resource "ibm_cd_tekton_pipeline_trigger" "cd_tekton_pipeline_trigger_manual" {
   event_listener      = "manual-run"
-  max_concurrent_runs = 3
+  max_concurrent_runs = 1
   name                = "Manual Trigger"
   pipeline_id         = ibm_cd_tekton_pipeline.tekton_pipeline.id
   type                = "manual"
+}
+resource "ibm_cd_tekton_pipeline_trigger" "cd_tekton_pipeline_trigger_commit" {
+  event_listener      = "github-commit"
+  max_concurrent_runs = 1
+  name                = "Git Commit Trigger"
+  pipeline_id         = ibm_cd_tekton_pipeline.tekton_pipeline.id
+  type                = "scm"
+  events              = ["push"]
+  source {
+    type = "git"
+    properties {
+      url    = var.code_repository_url
+      branch = "main"
+    }
+  }
 }
 
 # ------------------------ Tekton Properties ------------------------

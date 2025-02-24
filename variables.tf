@@ -28,7 +28,7 @@ variable "code_engine_project_name" {
 
 variable "container_registry_name" {
   type        = string
-  description = "Name for the CodeEngine project which holds the applications"
+  description = "Container registry namespace name which holds the images for the applications"
   default     = "mvp-images"
 }
 
