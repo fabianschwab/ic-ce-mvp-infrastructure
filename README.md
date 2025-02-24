@@ -124,14 +124,14 @@ Most of them have default values and are fine as they are but some needed to be 
 | code_engine_project_name        | Name for the CodeEngine project which holds the applications                                                | string | mvp-development                                                   |           |
 | container_registry_name         | Container registry namespace name which holds the images for the applications                               | string | mvp-images                                                        |           |
 | pg_database_name                | Name of the PostgreSQL database service                                                                     | string | mvp-database                                                      |           |
-| pg_admin_password               | Admin password for the PostgreSQL database                                                                  | string | true                                                              |           |
+| pg_admin_password               | Admin password for the PostgreSQL database                                                                  | string |                                                                   | true      |
 | pg_database_endpoint            | Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'. | string | private                                                           |           |
 | toolchain                       | Name of the automation Toolchain                                                                            | string | code-engine-deployment                                            |           |
 | code_repository_url             | URL of the code repository to build                                                                         | string |                                                                   |           |
 | repository_url_pipeline         | URL of the code repository the pipeline should build                                                        | string | https://github.com/fabianschwab/ic-ce-tekton-pipeline.git         |           |
 | repository_url_pipeline_catalog | URL of the code repository the pipeline should build                                                        | string | https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git |           |
 
-The `ibm_cloud_api_key` is the only value which is sensitive and should be provided as a secret. This api key is also used to deploy the application on code engine, so do not delete it after the infrastructure is created.
+The `ibm_cloud_api_key` is a value which is sensitive and should be provided as a secret. This api key is also used to deploy the application on code engine, so do not delete it after the infrastructure is created.
 
 The `code_repository_url` is also provided. It is the URL to the code repository which should be deployed. This repository must contain a `Dockerfile` as the pipeline will build the image and deploy it to code engine.
 
