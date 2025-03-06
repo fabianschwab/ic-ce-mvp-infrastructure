@@ -32,10 +32,9 @@ resource "ibm_cr_namespace" "icr_namespace" {
 
 
 resource "ibm_database" "pg_database" {
-  name          = var.pg_database_name
-  service       = "databases-for-postgresql"
-  plan          = "standard"
-  adminpassword = var.pg_admin_password
+  name    = var.pg_database_name
+  service = "databases-for-postgresql"
+  plan    = "standard"
 
   resource_group_id = ibm_resource_group.group.id
   location          = var.ibm_region

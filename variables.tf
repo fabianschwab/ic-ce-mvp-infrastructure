@@ -38,12 +38,6 @@ variable "pg_database_name" {
   default     = "mvp-database"
 }
 
-variable "pg_admin_password" {
-  type        = string
-  description = "Admin password for the PostgreSQL database"
-  sensitive   = true
-}
-
 variable "pg_database_endpoint" {
   description = "Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'."
   type        = string
