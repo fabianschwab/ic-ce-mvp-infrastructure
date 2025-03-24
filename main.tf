@@ -54,7 +54,7 @@ module "cicd" {
   resource_group_name             = var.resource_group_name
   ibm_region                      = var.ibm_region
   container_registry_namespace    = module.container_registry.namespace_name
-  code_engine_secrets_name        = var.create_postgresql ? module.postgresql[0].secret_name : ""
+  code_engine_secrets_name        = module.code_engine.code_engine_secrets_name
 }
 
 module "cd_service" {
