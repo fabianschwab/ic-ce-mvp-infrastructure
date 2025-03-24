@@ -32,6 +32,12 @@ variable "container_registry_name" {
   default     = "mvp-images"
 }
 
+variable "create_postgresql" {
+  type        = string
+  description = "Boolean flag to control if PostgreSQL database should be created"
+  default     = true
+}
+
 variable "pg_database_name" {
   type        = string
   description = "Name of the PostgreSQL database service"

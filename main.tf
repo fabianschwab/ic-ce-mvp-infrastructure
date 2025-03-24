@@ -29,43 +29,15 @@ resource "ibm_cr_namespace" "icr_namespace" {
   resource_group_id = ibm_resource_group.group.id
 }
 
+module "postgresql" {
+  count  = var.create_postgresql ? 1 : 0
+  source = "./modules/postgresql"
 
-
-resource "ibm_database" "pg_database" {
-  name    = var.pg_database_name
-  service = "databases-for-postgresql"
-  plan    = "standard"
-
-  resource_group_id = ibm_resource_group.group.id
-  location          = var.ibm_region
-
-  service_endpoints = var.pg_database_endpoint
-
-  group {
-    group_id = "member"
-    host_flavor {
-      id = "multitenant"
-    }
-    disk {
-      allocation_mb = 5120
-    }
-  }
-}
-
-resource "ibm_resource_key" "pg_credentials" {
-  name                 = "pg-service-credentials"
-  resource_instance_id = ibm_database.pg_database.id
-}
-
-resource "ibm_code_engine_secret" "code_engine_secrets" {
-  project_id = ibm_code_engine_project.code_engine_project.id
-  name       = "terraform-generated-secrets"
-  format     = "generic"
-
-  data = {
-    POSTGRESQL = jsondecode(ibm_resource_key.pg_credentials.credentials_json).connection.postgres.composed[0]
-    # Add more KEY = value if necessary
-  }
+  pg_database_name       = var.pg_database_name
+  resource_group_id      = ibm_resource_group.group.id
+  region                 = var.ibm_region
+  pg_database_endpoint   = var.pg_database_endpoint
+  code_engine_project_id = ibm_code_engine_project.code_engine_project.id
 }
 
 # -----------------------------------------------------------
@@ -374,7 +346,7 @@ resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_22" {
   name        = "env-from-secrets"
   pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
   type        = "text"
-  value       = ibm_code_engine_secret.code_engine_secrets.name
+  value       = var.create_postgresql ? module.postgresql[0].secret_name : null
 }
 resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_23" {
   name        = "git-token"

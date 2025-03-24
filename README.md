@@ -1,5 +1,7 @@
 # IBM Cloud Client Engineering MVP Infrastructure
 
+Important: Your IBM account must be connected to the IBM GitHub.
+
 ## TLDR
 
 Fast start steps either from local machine or from IBM Cloud via **Schematics**.
