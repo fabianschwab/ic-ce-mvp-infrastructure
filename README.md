@@ -1,6 +1,9 @@
 # IBM Cloud Client Engineering MVP Infrastructure
 
-Important: Your IBM account must be connected to the IBM GitHub.
+Important:
+
+1. Your IBM account must be connected to the IBM GitHub.
+2. Change the Container Registry Plan
 
 ## TLDR
 
@@ -14,8 +17,7 @@ Prerequisites:
 2. Create an IBM Cloud API Key
 3. Provide the following values in the `terraform.tfvars` file or when prompted on the cli:
    1. `ibmcloud_api_key` - IBM Cloud API Key
-   2. `pg_admin_password` - Password for the PostgreSQL `admin` user
-   3. `code_repository_url` - URL to the code repository to be deployed
+   2. `code_repository_url` - URL to the code repository to be deployed
 
 ```sh
 git clone https://github.com/fabianschwab/ic-ce-mvp-infrastructure.git
@@ -42,7 +44,7 @@ Steps:
 You be redirected to the workspace page.
 
 1. Goto *Settings* tab and change the variables as needed.
-   1. Needed are `ibm_cloud_api_key`, `pg_admin_password` and `code_repository_url`
+   1. Needed are `ibm_cloud_api_key` and `code_repository_url`
 2. Click *Plan* and then *Apply*
 
 ## Overview
@@ -59,13 +61,15 @@ It sets up the following resources:
 
 - Resource Group
 - Container Registry Namespace
-  - Retention Policy (10 images per repository)
+  - Retention Policy (3 images per repository)
   - The name has a random suffix to avoid name collisions
-- PostgreSQL Instance
+- PostgreSQL Instance (optional)
   - Service Credentials
 - Code Engine Project
-  - Code Engine Application
-    - Secret for PostgreSQL
+  - Secrets
+    - PostgreSQL (when database it created)
+  - Code Engine Applications
+    - OAuth Proxy
 - Continuous Delivery Service for executing the tekton pipelines
 - Toolchain
   - Repositories
@@ -78,8 +82,7 @@ It sets up the following resources:
     - Tekton Pipeline Triggers
       - Manuel Trigger
       - Git Trigger for *commit* on `main` branch
-
-![Architecture Overview](./architecture.png)
+- AppID
 
 ## Create Infrastructure
 
@@ -127,7 +130,6 @@ Most of them have default values and are fine as they are but some needed to be 
 | code_engine_project_name        | Name for the CodeEngine project which holds the applications                                                | string | mvp-development                                                   |           |
 | container_registry_name         | Container registry namespace name which holds the images for the applications                               | string | mvp-images                                                        |           |
 | pg_database_name                | Name of the PostgreSQL database service                                                                     | string | mvp-database                                                      |           |
-| pg_admin_password               | Admin password for the PostgreSQL database                                                                  | string |                                                                   | true      |
 | pg_database_endpoint            | Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'. | string | private                                                           |           |
 | toolchain                       | Name of the automation Toolchain                                                                            | string | code-engine-deployment                                            |           |
 | code_repository_url             | URL of the code repository to build                                                                         | string |                                                                   |           |
@@ -138,5 +140,4 @@ The `ibm_cloud_api_key` is a value which is sensitive and should be provided as 
 
 The `code_repository_url` is also provided. It is the URL to the code repository which should be deployed. This repository must contain a `Dockerfile` as the pipeline will build the image and deploy it to code engine.
 
-The `pg_admin_password` is the password for the PostgreSQL `admin` user. This password is not used later for the application but is needed to create the database.
 The database is not reachable from outside the cloud account for security reasons. If you want to change this, consider changing the `pg_database_endpoint` variable to `public` or `public-and-private`.
