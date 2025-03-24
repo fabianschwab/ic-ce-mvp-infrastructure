@@ -21,8 +21,3 @@ variable "pg_database_endpoint" {
     error_message = "Invalid value! Allowed values: 'private', 'public', 'public-and-private'."
   }
 }
-
-variable "code_engine_project_id" {
-  type        = string
-  description = "ID of the Code Engine project where to create the secrets"
-}

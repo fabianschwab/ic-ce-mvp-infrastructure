@@ -19,8 +19,9 @@ resource "ibm_resource_group" "group" {
 module "code_engine" {
   source = "./modules/code-engine"
 
-  project_name      = var.code_engine_project_name
-  resource_group_id = ibm_resource_group.group.id
+  project_name                 = var.code_engine_project_name
+  resource_group_id            = ibm_resource_group.group.id
+  postgresql_connection_string = var.create_postgresql ? module.postgresql[0].connection_string : ""
 }
 
 module "container_registry" {
@@ -34,11 +35,10 @@ module "postgresql" {
   count  = var.create_postgresql ? 1 : 0
   source = "./modules/postgresql"
 
-  pg_database_name       = var.pg_database_name
-  resource_group_id      = ibm_resource_group.group.id
-  region                 = var.ibm_region
-  pg_database_endpoint   = var.pg_database_endpoint
-  code_engine_project_id = module.code_engine.project_id
+  pg_database_name     = var.pg_database_name
+  resource_group_id    = ibm_resource_group.group.id
+  region               = var.ibm_region
+  pg_database_endpoint = var.pg_database_endpoint
 }
 
 module "cicd" {
@@ -54,7 +54,7 @@ module "cicd" {
   resource_group_name             = var.resource_group_name
   ibm_region                      = var.ibm_region
   container_registry_namespace    = module.container_registry.namespace_name
-  postgresql_secret_name          = var.create_postgresql ? module.postgresql[0].secret_name : ""
+  code_engine_secrets_name        = var.create_postgresql ? module.postgresql[0].secret_name : ""
 }
 
 module "cd_service" {

@@ -8,7 +8,8 @@ output "credentials_key_id" {
   value       = ibm_resource_key.pg_credentials.id
 }
 
-output "secret_name" {
-  description = "The name of the Code Engine secret containing database credentials"
-  value       = ibm_code_engine_secret.code_engine_secrets.name
+output "connection_string" {
+  description = "PostgreSQL connection string"
+  value       = jsondecode(ibm_resource_key.pg_credentials.credentials_json).connection.postgres.composed[0]
+  sensitive   = true
 }

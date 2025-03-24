@@ -23,13 +23,3 @@ resource "ibm_resource_key" "pg_credentials" {
   name                 = "pg-service-credentials"
   resource_instance_id = ibm_database.pg_database.id
 }
-
-resource "ibm_code_engine_secret" "code_engine_secrets" {
-  project_id = var.code_engine_project_id
-  name       = "terraform-generated-secrets"
-  format     = "generic"
-
-  data = {
-    POSTGRESQL = jsondecode(ibm_resource_key.pg_credentials.credentials_json).connection.postgres.composed[0]
-  }
-}

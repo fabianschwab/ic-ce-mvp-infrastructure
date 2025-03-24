@@ -49,8 +49,8 @@ variable "container_registry_namespace" {
   description = "Container registry namespace"
 }
 
-variable "postgresql_secret_name" {
+variable "code_engine_secrets_name" {
   type        = string
-  description = "Name of the PostgreSQL secret"
+  description = "Name of the generated secret"
   default     = ""
 }
