@@ -375,7 +375,7 @@ resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_27" {
   name        = "registry-namespace"
   pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
   type        = "text"
-  value       = ibm_cr_namespace.icr_namespace.name
+  value       = module.container_registry.namespace_name
   locked      = true
 }
 resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_28" {
@@ -421,12 +421,17 @@ resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_34" {
   value       = "1300"
 }
 
-# --------------------------------------------------------------------
-# --------------------------------------------------------------------
-
 module "cd_service" {
   source = "./modules/cd-service"
 
+  region            = var.ibm_region
+  resource_group_id = ibm_resource_group.group.id
+}
+
+module "appid" {
+  source = "./modules/appid"
+
+  name              = "auth-provider"
   region            = var.ibm_region
   resource_group_id = ibm_resource_group.group.id
 }
