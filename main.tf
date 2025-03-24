@@ -21,12 +21,11 @@ resource "ibm_code_engine_project" "code_engine_project" {
   resource_group_id = ibm_resource_group.group.id
 }
 
-resource "random_id" "unique_id" {
-  byte_length = 4
-}
-resource "ibm_cr_namespace" "icr_namespace" {
-  name              = "${var.container_registry_name}-${random_id.unique_id.hex}"
-  resource_group_id = ibm_resource_group.group.id
+module "container_registry" {
+  source = "./modules/container-registry"
+
+  container_registry_name = var.container_registry_name
+  resource_group_id       = ibm_resource_group.group.id
 }
 
 module "postgresql" {

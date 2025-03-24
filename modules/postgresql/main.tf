@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    ibm = {
-      source  = "IBM-Cloud/ibm"
-      version = "1.75.1"
-    }
-  }
-}
-
 resource "ibm_database" "pg_database" {
   name    = var.pg_database_name
   service = "databases-for-postgresql"
