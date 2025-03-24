@@ -16,8 +16,10 @@ resource "ibm_resource_group" "group" {
   name = var.resource_group_name
 }
 
-resource "ibm_code_engine_project" "code_engine_project" {
-  name              = var.code_engine_project_name
+module "code_engine" {
+  source = "./modules/code-engine"
+
+  project_name      = var.code_engine_project_name
   resource_group_id = ibm_resource_group.group.id
 }
 
@@ -36,7 +38,7 @@ module "postgresql" {
   resource_group_id      = ibm_resource_group.group.id
   region                 = var.ibm_region
   pg_database_endpoint   = var.pg_database_endpoint
-  code_engine_project_id = ibm_code_engine_project.code_engine_project.id
+  code_engine_project_id = module.code_engine.project_id
 }
 
 # -----------------------------------------------------------
