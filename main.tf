@@ -424,11 +424,9 @@ resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_34" {
 # --------------------------------------------------------------------
 # --------------------------------------------------------------------
 
-# Tekton runner instance for Tekton pipelines execution on IBM Cloud (shared)
-resource "ibm_resource_instance" "cd_service_instance" {
-  name              = "cd-service-worker"
-  service           = "continuous-delivery"
-  plan              = "lite"
-  location          = var.ibm_region
+module "cd_service" {
+  source = "./modules/cd-service"
+
+  region            = var.ibm_region
   resource_group_id = ibm_resource_group.group.id
 }
