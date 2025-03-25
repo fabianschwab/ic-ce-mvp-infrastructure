@@ -51,22 +51,28 @@ resource "ibm_code_engine_app" "oauth_proxy" {
     "--upstream=http://web-app.1tej7v4z4ykt.svc.cluster.local"
   ]
 
-  # run_env_variables {
-  #   type      = "secret_full_reference"
-  #   name      = "secret_env_var"
-  #   reference = "secret_name"
-  # }
+  run_env_variables {
+    type      = "secret_full_reference"
+    reference = "terraform-generated-secrets-auth"
+  }
+
+  depends_on = [ibm_code_engine_secret.oauth-proxy-secret]
 }
 
-# resource "ibm_code_engine_secret" "oauth-proxy-secret" {
-#   project_id = ibm_code_engine_project.code_engine_project.id
-#   name       = "terraform-generated-secrets-auth"
-#   format     = "generic"
+resource "ibm_code_engine_secret" "oauth-proxy-secret" {
+  project_id = ibm_code_engine_project.code_engine_project.id
+  name       = "terraform-generated-secrets-auth"
+  format     = "generic"
 
-#   data = {
-#     MYENV      = "MyValue"
-#   }
-# }
+  data = {
+    OAUTH2_PROXY_COOKIE_DOMAIN   = ""
+    OAUTH2_PROXY_COOKIE_SECRET   = ""
+    OAUTH2_PROXY_CLIENT_ID       = ""
+    OAUTH2_PROXY_CLIENT_SECRET   = ""
+    OAUTH2_PROXY_OIDC_ISSUER_URL = ""
+    OAUTH2_PROXY_REDIRECT_URL    = ""
+  }
+}
 
 #  ibmcloud ce application create \
 #     --name oauth-proxy \✅
