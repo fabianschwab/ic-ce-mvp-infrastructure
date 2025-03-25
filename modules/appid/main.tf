@@ -6,10 +6,10 @@ resource "ibm_resource_instance" "appid" {
   resource_group_id = var.resource_group_id
 }
 
-resource "ibm_resource_key" "appid_credentials" {
-  name                 = "appid-service-credentials"
-  role                 = "Writer"
-  resource_instance_id = ibm_resource_instance.appid.id
+resource "ibm_appid_application" "app" {
+  tenant_id = ibm_resource_instance.appid.guid
+  name      = "terraform-generated-oauth2proxy"
+  type      = "regularwebapp"
 }
 
 resource "ibm_appid_idp_cloud_directory" "cd" {

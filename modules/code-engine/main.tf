@@ -65,13 +65,18 @@ resource "ibm_code_engine_secret" "oauth-proxy-secret" {
   format     = "generic"
 
   data = {
-    OAUTH2_PROXY_COOKIE_DOMAIN   = ""
-    OAUTH2_PROXY_COOKIE_SECRET   = ""
-    OAUTH2_PROXY_CLIENT_ID       = ""
-    OAUTH2_PROXY_CLIENT_SECRET   = ""
-    OAUTH2_PROXY_OIDC_ISSUER_URL = ""
-    OAUTH2_PROXY_REDIRECT_URL    = ""
+    OAUTH2_PROXY_COOKIE_DOMAIN   = "https://oauth2proxy.1tej7v4z4ykt.eu-de.codeengine.appdomain.cloud"
+    OAUTH2_PROXY_COOKIE_SECRET   = random_password.cookie_secret.result
+    OAUTH2_PROXY_CLIENT_ID       = "1a412199-d4d0-4186-95a3-2624de09f46f"
+    OAUTH2_PROXY_CLIENT_SECRET   = "YjExZjUwNWMtOTZmMi00ZGJmLWJhZWEtNGMzYWE4NzdlMGQ5"
+    OAUTH2_PROXY_OIDC_ISSUER_URL = "https://eu-de.appid.cloud.ibm.com/oauth/v4/30cd2cab-aeeb-4d33-a377-52aa1cb365d0"
+    OAUTH2_PROXY_REDIRECT_URL    = "https://oauth2proxy.1tej7v4z4ykt.eu-de.codeengine.appdomain.cloud"
   }
+}
+
+resource "random_password" "cookie_secret" {
+  length  = 32
+  special = true
 }
 
 #  ibmcloud ce application create \

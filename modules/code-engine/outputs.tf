@@ -11,3 +11,7 @@ output "project_name" {
 output "code_engine_secrets_name" {
   value = ibm_code_engine_secret.project_secret.name
 }
+
+output "code_engine_oauth_proxy_url" {
+  value = ibm_code_engine_app.oauth_proxy.endpoint
+}
