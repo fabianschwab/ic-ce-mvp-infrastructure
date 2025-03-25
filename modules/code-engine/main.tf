@@ -13,3 +13,79 @@ resource "ibm_code_engine_secret" "project_secret" {
     MYENV      = "MyValue"
   }
 }
+
+resource "ibm_code_engine_app" "oauth_proxy" {
+  project_id      = ibm_code_engine_project.code_engine_project.id
+  name            = "oauth2proxy"
+  image_reference = "quay.io/oauth2-proxy/oauth2-proxy:latest"
+  image_port      = 4180
+
+  scale_max_instances = 1
+  scale_min_instances = 1
+
+  scale_cpu_limit    = "0.5"
+  scale_memory_limit = "1G"
+
+  probe_liveness {
+    type = "http"
+    path = "/ping"
+    port = 4180
+  }
+
+  probe_readiness {
+    type = "http"
+    path = "/ping"
+    port = 4180
+  }
+
+  run_arguments = [
+    "--provider=oidc",
+    "--email-domain=ibm.com",
+    "--email-domain=de.ibm.com",
+    "--http-address=:4180",
+    "--pass-authorization-header=true",
+    "--insecure-oidc-allow-unverified-email=true",
+    "--pass-host-header=false",
+    "--skip-provider-button=true",
+    "--upstream-timeout=300s",
+    "--upstream=http://web-app.1tej7v4z4ykt.svc.cluster.local"
+  ]
+
+  # run_env_variables {
+  #   type      = "secret_full_reference"
+  #   name      = "secret_env_var"
+  #   reference = "secret_name"
+  # }
+}
+
+# resource "ibm_code_engine_secret" "oauth-proxy-secret" {
+#   project_id = ibm_code_engine_project.code_engine_project.id
+#   name       = "terraform-generated-secrets-auth"
+#   format     = "generic"
+
+#   data = {
+#     MYENV      = "MyValue"
+#   }
+# }
+
+#  ibmcloud ce application create \
+#     --name oauth-proxy \✅
+#     --image quay.io/oauth2-proxy/oauth2-proxy:latest \✅
+#     --port http1:4180 \✅
+#     --probe-live type=http --probe-live path=/ping --probe-live port=4180 \✅
+#     --probe-ready type=http --probe-ready path=/ping --probe-ready port=4180 \✅
+#     --cpu 0.5 \✅
+#     --memory 1G \✅
+#     --max-scale 1 \✅
+#     --min-scale 1 \✅
+#     --env-from-secret oauth-proxy-secret \‼️
+#     --argument '--provider=oidc' \✅
+#     --argument '--email-domain=ibm.com' \✅
+#     --argument '--email-domain=de.ibm.com' \✅
+#     --argument '--http-address=:4180' \✅
+#     --argument '--pass-authorization-header=true' \✅
+#     --argument '--insecure-oidc-allow-unverified-email=true' \✅
+#     --argument '--pass-host-header=false' \✅
+#     --argument '--skip-provider-button=true' \✅
+#     --argument '--upstream-timeout=300s' \✅
+#     --argument '--upstream=http://<upstream-service-name>.<code-engine-namespace>.svc.cluster.local'✅ ⚠️
