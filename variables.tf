@@ -33,7 +33,7 @@ variable "container_registry_name" {
 }
 
 variable "create_postgresql" {
-  type        = string
+  type        = bool
   description = "Boolean flag to control if PostgreSQL database should be created"
   default     = true
 }
@@ -52,6 +52,12 @@ variable "pg_database_endpoint" {
     condition     = contains(["private", "public", "public-and-private"], var.pg_database_endpoint)
     error_message = "Invalid value! Allowed values: 'private', 'public', 'public-and-private'."
   }
+}
+
+variable "use_oauth2proxy" {
+  type        = bool
+  description = "Boolean flag to control if project is behind oauth2proxy."
+  default     = true
 }
 
 variable "toolchain" {

@@ -7,6 +7,11 @@ terraform {
   }
 }
 
+locals {
+  oauth2proxy_name = "oauth2proxy"
+  proxy_url        = "https://${local.oauth2proxy_name}.${module.code_engine.code_engine_namespace}.${var.ibm_region}.codeengine.appdomain.cloud"
+}
+
 provider "ibm" {
   ibmcloud_api_key = var.ibm_cloud_api_key
   region           = var.ibm_region
@@ -22,6 +27,20 @@ module "code_engine" {
   project_name                 = var.code_engine_project_name
   resource_group_id            = ibm_resource_group.group.id
   postgresql_connection_string = var.create_postgresql ? module.postgresql[0].connection_string : ""
+}
+
+module "oauth_proxy" {
+  count  = var.use_oauth2proxy ? 1 : 0
+  source = "./modules/oauth-proxy"
+
+  proxy_name            = local.oauth2proxy_name
+  project_id            = module.code_engine.project_id
+  cookie_domain         = local.proxy_url
+  client_id             = module.appid.appid_oauth_app_client_id
+  client_secret         = module.appid.appid_oauth_app_client_secret
+  oidc_issuer_url       = module.appid.appid_oauth_app_issuer
+  redirect_url          = local.proxy_url
+  code_engine_namespace = module.code_engine.code_engine_namespace
 }
 
 module "container_registry" {
@@ -70,4 +89,5 @@ module "appid" {
   name              = "auth-provider"
   region            = var.ibm_region
   resource_group_id = ibm_resource_group.group.id
+  redirect_urls     = var.use_oauth2proxy ? ["${local.proxy_url}/oauth2/callback"] : []
 }

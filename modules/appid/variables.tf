@@ -12,3 +12,9 @@ variable "resource_group_id" {
   type        = string
   description = "ID of the resource group"
 }
+
+variable "redirect_urls" {
+  type        = list(string)
+  description = "List of allowed redirect URLs for App ID"
+  default     = ["http://localhost:3000/"]
+}

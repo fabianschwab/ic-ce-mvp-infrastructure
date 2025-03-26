@@ -42,3 +42,8 @@ resource "ibm_appid_idp_custom" "idp" {
   tenant_id = ibm_resource_instance.appid.guid
   is_active = false
 }
+
+resource "ibm_appid_redirect_urls" "urls" {
+  tenant_id = ibm_resource_instance.appid.guid
+  urls      = var.redirect_urls
+}

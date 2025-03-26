@@ -11,6 +11,5 @@ variable "resource_group_id" {
 variable "postgresql_connection_string" {
   type        = string
   description = "PostgreSQL connection string to store in secrets"
-  default     = ""
   sensitive   = true
 }
