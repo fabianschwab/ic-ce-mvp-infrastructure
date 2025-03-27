@@ -52,9 +52,12 @@ You be redirected to the workspace page.
 This project is based on the [Develop a Code Engine app](https://cloud.ibm.com/devops/setup/deploy?repository=https%3A%2F%2Feu-de.git.cloud.ibm.com%2Fopen-toolchain%2Fcode-engine-toolchain&env_id=ibm:yp:eu-de) IBM Cloud Toolchain.
 
 It basically does the same only a bit more simplified. E.g. it does not do all the pipeline steps and does not create forks of the repositories for the pipeline.
-The aim is to have an easy to use infrastructure for the MVP, which deploys a application based on the `Dockerfile` in the code repository and sets up a **PostgreSQL** instance.
+The aim is to have an easy to use infrastructure for the MVP, which deploys a application based on the `Dockerfile` in the code repository.
+OPtionally is also sets up a **PostgreSQL** instance.
 The **PostgreSQL** instance is the smallest available plan and the credentials are stored in a **Code Engine** secret and can be used by the application to connect to the database.
 The environment variable with the connection string is `POSTGRESQL`.
+By default all applications are behind an **OAuth2Proxy** for preventing public accessible MVPs. Only services with `internal` as domain mapping are not exposed through the proxy.
+If for some reason no authentication is needed a flag can be set to remove or not set up the **OAuth2Proxy** infrastructure.
 
 This repository contains the infrastructure code as terraform scripts.
 It sets up the following resources:
@@ -83,6 +86,8 @@ It sets up the following resources:
       - Manuel Trigger
       - Git Trigger for *commit* on `main` branch
 - AppID
+  - Service Credentials for OAuth2Proxy
+  - Valid Redirect URL to proxy
 
 ## Create Infrastructure
 
@@ -141,3 +146,11 @@ The `ibm_cloud_api_key` is a value which is sensitive and should be provided as 
 The `code_repository_url` is also provided. It is the URL to the code repository which should be deployed. This repository must contain a `Dockerfile` as the pipeline will build the image and deploy it to code engine.
 
 The database is not reachable from outside the cloud account for security reasons. If you want to change this, consider changing the `pg_database_endpoint` variable to `public` or `public-and-private`.
+
+## Configure Pipeline
+
+<!-- URL: Valid values are 'public', 'private' and 'project'. -->
+
+### Add additional pipelines
+
+<!-- TODO -->

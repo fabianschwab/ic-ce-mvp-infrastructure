@@ -10,7 +10,7 @@ output "project_name" {
 
 output "code_engine_namespace" {
   description = "The namespace of the Code Engine project"
-  value       = ibm_code_engine_project.code_engine_project.status[0].namespace
+  value       = local.response_body.Shortenednamespace
 }
 
 output "code_engine_secrets_name" {

@@ -27,6 +27,7 @@ module "code_engine" {
   project_name                 = var.code_engine_project_name
   resource_group_id            = ibm_resource_group.group.id
   postgresql_connection_string = var.create_postgresql ? module.postgresql[0].connection_string : ""
+  ibm_region                   = var.ibm_region
 }
 
 module "oauth_proxy" {

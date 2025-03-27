@@ -223,7 +223,7 @@ resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_09" {
   name        = "app-visibility"
   pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
   type        = "text"
-  value       = "public"
+  value       = "private"
 }
 resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_10" {
   name        = "build-size"

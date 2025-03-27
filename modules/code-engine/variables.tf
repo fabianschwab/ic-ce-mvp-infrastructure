@@ -1,3 +1,9 @@
+variable "ibm_region" {
+  type        = string
+  description = "Region and zone the resources should be created in."
+  default     = "eu-de"
+}
+
 variable "project_name" {
   type        = string
   description = "Name of the Code Engine project"
