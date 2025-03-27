@@ -13,3 +13,8 @@ output "cookie_secret" {
   value       = random_password.cookie_secret.result
   sensitive   = true
 }
+
+output "oauth2proxy_url" {
+  description = "The public facing URL"
+  value       = ibm_code_engine_app.oauth_proxy.endpoint
+}

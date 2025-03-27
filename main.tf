@@ -42,6 +42,7 @@ module "oauth_proxy" {
   oidc_issuer_url       = module.appid.appid_oauth_app_issuer
   redirect_url          = local.proxy_url
   code_engine_namespace = module.code_engine.code_engine_namespace
+  ibm_region            = var.ibm_region
 }
 
 module "container_registry" {

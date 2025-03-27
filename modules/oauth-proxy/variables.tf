@@ -38,3 +38,9 @@ variable "code_engine_namespace" {
   type        = string
   description = "The namespace for generating service URLs"
 }
+
+variable "ibm_region" {
+  type        = string
+  description = "Region and zone the resources should be created in."
+  default     = "eu-de"
+}

@@ -52,8 +52,8 @@ resource "ibm_code_engine_app" "oauth_proxy" {
     "--pass-host-header=false",
     "--skip-provider-button=true",
     "--upstream-timeout=300s",
-    "--upstream=http://*.${var.code_engine_namespace}.svc.cluster.local/",
-    "--whitelist_domains=*.${var.code_engine_namespace}.svc.cluster.local"
+    "--upstream=http://*.${var.code_engine_namespace}.private.${var.ibm_region}.codeengine.appdomain.cloud/",
+    # "--whitelist_domain=*.${var.code_engine_namespace}.private.${var.ibm_region}.codeengine.appdomain.cloud/"
   ]
 
   run_env_variables {
