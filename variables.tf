@@ -66,9 +66,18 @@ variable "toolchain" {
   default     = "code-engine-deployment"
 }
 
-variable "code_repository_url" {
-  type        = string
-  description = "URL of the code repository to build"
+variable "code_repositories" {
+  type = list(object({
+    url         = string
+    root_folder = string
+    name        = string
+    visibility  = string
+  }))
+  validation {
+    condition     = alltrue([for repo in var.code_repositories : contains(["public", "private", "project"], repo.visibility)])
+    error_message = "Invalid visibility value. Valid values are 'public', 'private' and 'project'."
+  }
+  description = "List of services to deploy."
 }
 
 variable "repository_url_pipeline" {

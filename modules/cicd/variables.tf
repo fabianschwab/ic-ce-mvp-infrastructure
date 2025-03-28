@@ -1,6 +1,10 @@
-variable "toolchain" {
+variable "ci_cd_toolchain_id" {
   type        = string
-  description = "Name of the toolchain"
+  description = "The ID of the toolchain the pipelines are added to"
+}
+variable "name" {
+  type        = string
+  description = "Name of the delivery pipeline"
 }
 
 variable "resource_group_id" {
@@ -21,6 +25,25 @@ variable "repository_url_pipeline_catalog" {
 variable "code_repository_url" {
   type        = string
   description = "URL of the code repository"
+}
+
+variable "root_folder" {
+  type        = string
+  description = "Root folder of the source code and Dockerfile"
+  default     = "/"
+  validation {
+    condition     = can(regex("^/", var.root_folder))
+    error_message = "The root_folder value must start with a forward slash (/)."
+  }
+}
+variable "visibility" {
+  type        = string
+  description = "Visibility of the code engine application. Allowed values are: 'public', 'private' and 'project'."
+  default     = "private"
+  validation {
+    condition     = contains(["public", "private", "project"], var.visibility)
+    error_message = "Invalid visibility value. Valid values are 'public', 'private' and 'project'."
+  }
 }
 
 variable "ibm_cloud_api_key" {
