@@ -1,13 +1,19 @@
+locals {
+  git_id = (
+    can(regex("^https://github\\.com/", var.code_repository_url)) ? "github" :
+    can(regex("^https://github\\.ibm\\.com/", var.code_repository_url)) ? "integrated" :
+    "githubcustom"
+  )
+}
 resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
-
   toolchain_id = var.ci_cd_toolchain_id
   initialization {
-    git_id   = "integrated"
+    git_id   = local.git_id
     repo_url = var.code_repository_url
     type     = "link"
   }
   parameters {
-    git_id   = "integrated"
+    git_id   = local.git_id
     repo_url = var.code_repository_url
     type     = "link"
   }
