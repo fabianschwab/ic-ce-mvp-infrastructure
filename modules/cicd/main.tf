@@ -7,7 +7,6 @@ locals {
 }
 resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
   toolchain_id = var.ci_cd_toolchain_id
-  name         = "${var.name}-repo"
   initialization {
     git_id   = local.git_id
     repo_url = var.code_repository_url
@@ -22,10 +21,10 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
 
 # Delivery: Pipeline
 resource "ibm_cd_toolchain_tool_pipeline" "ci_cd_pipeline" {
+  toolchain_id = var.ci_cd_toolchain_id
   parameters {
     name = var.name
   }
-  toolchain_id = var.ci_cd_toolchain_id
 }
 # -----------------------------------------------------------------
 # ------------------------ Tekton Pipeline ------------------------
