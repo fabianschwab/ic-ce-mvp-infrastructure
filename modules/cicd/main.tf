@@ -7,6 +7,7 @@ locals {
 }
 resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
   toolchain_id = var.ci_cd_toolchain_id
+  name         = "${var.name}-repo"
   initialization {
     git_id   = local.git_id
     repo_url = var.code_repository_url
