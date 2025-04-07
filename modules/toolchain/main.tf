@@ -24,12 +24,10 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_repository" {
 
   toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
   initialization {
-    git_id   = local.pipeline_git_id
     type     = "link"
     repo_url = var.repository_url_pipeline
   }
   parameters {
-    git_id   = local.pipeline_git_id
     repo_url = var.repository_url_pipeline
   }
 }
@@ -37,12 +35,10 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_catalog" {
 
   toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
   initialization {
-    git_id   = local.catalog_git_id
     type     = "link"
     repo_url = var.repository_url_pipeline_catalog
   }
   parameters {
-    git_id   = local.catalog_git_id
     repo_url = var.repository_url_pipeline_catalog
   }
 }
