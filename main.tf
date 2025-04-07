@@ -72,11 +72,11 @@ module "toolchain" {
 
 module "cicd" {
   source   = "./modules/cicd"
-  for_each = { for repo in var.code_repositories : "${repo.name}-${repo.url}" => repo }
+  for_each = { for idx, repo in var.code_repositories : "${repo.name}-${idx}" => repo }
 
   code_repository_url             = each.value.url
   root_folder                     = each.value.root_folder
-  name                            = each.value.name
+  name                            = "${each.value.name}-${idx}"
   visibility                      = each.value.visibility
   ci_cd_toolchain_id              = module.toolchain.toolchain_id
   resource_group_id               = ibm_resource_group.group.id
