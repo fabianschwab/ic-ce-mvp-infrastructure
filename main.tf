@@ -76,7 +76,7 @@ module "cicd" {
 
   code_repository_url             = each.value.url
   root_folder                     = each.value.root_folder
-  name                            = "${each.value.name}-${idx}"
+  name                            = "${each.value.name}-${each.key}"
   visibility                      = each.value.visibility
   ci_cd_toolchain_id              = module.toolchain.toolchain_id
   resource_group_id               = ibm_resource_group.group.id
