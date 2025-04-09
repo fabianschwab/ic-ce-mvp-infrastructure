@@ -70,25 +70,25 @@ module "toolchain" {
   repository_url_pipeline_catalog = var.repository_url_pipeline_catalog
 }
 
-# module "cicd" {
-#   source   = "./modules/cicd"
-#   for_each = { for idx, repo in var.code_repositories : "${repo.name}-${idx}" => repo }
+module "cicd" {
+  source   = "./modules/cicd"
+  for_each = { for idx, repo in var.code_repositories : idx => repo }
 
-#   code_repository_url             = each.value.url
-#   root_folder                     = each.value.root_folder
-#   name                            = each.value.name
-#   visibility                      = each.value.visibility
-#   ci_cd_toolchain_id              = module.toolchain.toolchain_id
-#   resource_group_id               = ibm_resource_group.group.id
-#   repository_url_pipeline         = var.repository_url_pipeline
-#   repository_url_pipeline_catalog = var.repository_url_pipeline_catalog
-#   ibm_cloud_api_key               = var.ibm_cloud_api_key
-#   code_engine_project_name        = var.code_engine_project_name
-#   resource_group_name             = var.resource_group_name
-#   ibm_region                      = var.ibm_region
-#   container_registry_namespace    = module.container_registry.namespace_name
-#   code_engine_secrets_name        = module.code_engine.code_engine_secrets_name
-# }
+  code_repository_url             = each.value.url
+  root_folder                     = each.value.root_folder
+  name                            = each.value.name
+  visibility                      = each.value.visibility
+  ci_cd_toolchain_id              = module.toolchain.toolchain_id
+  resource_group_id               = ibm_resource_group.group.id
+  repository_url_pipeline         = var.repository_url_pipeline
+  repository_url_pipeline_catalog = var.repository_url_pipeline_catalog
+  ibm_cloud_api_key               = var.ibm_cloud_api_key
+  code_engine_project_name        = var.code_engine_project_name
+  resource_group_name             = var.resource_group_name
+  ibm_region                      = var.ibm_region
+  container_registry_namespace    = module.container_registry.namespace_name
+  code_engine_secrets_name        = module.code_engine.code_engine_secrets_name
+}
 
 module "cd_service" {
   source = "./modules/cd-service"

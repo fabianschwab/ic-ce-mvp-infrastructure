@@ -69,6 +69,7 @@ variable "toolchain" {
 variable "code_repositories" {
   type = list(object({
     url         = string
+    # token       = { type = string, sensitive = true }
     root_folder = string
     name        = string
     visibility  = string

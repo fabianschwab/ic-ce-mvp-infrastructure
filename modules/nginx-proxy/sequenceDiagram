@@ -1,0 +1,27 @@
+sequenceDiagram
+    participant Client
+    participant Nginx
+    participant Auth as oauth2-proxy
+    participant App1 as Application 1
+    participant App2 as Application 2
+
+    Note over Client,App2: Authentication Flow
+
+    Client->>Nginx: Request to app1.example.com
+    Nginx->>Auth: auth_request /oauth2/auth
+    Auth-->>Nginx: Return auth status
+
+    alt Not Authenticated
+        Nginx->>Client: Redirect to auth.example.com/oauth2/start
+        Client->>Auth: Authentication Request
+        Auth-->>Client: Redirect to callback URL
+        Client->>Auth: Callback with auth code
+        Auth-->>Client: Set auth cookie
+        Note over Client,Auth: Cookie domain: .example.com
+    end
+
+    alt Already Authenticated
+        Nginx->>App1: Forward request<br/>with X-User/X-Email headers
+        App1-->>Nginx: Response
+        Nginx-->>Client: Protected content
+    end

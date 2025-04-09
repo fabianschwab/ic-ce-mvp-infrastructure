@@ -5,6 +5,13 @@ Important:
 1. Your IBM account must be connected to the IBM GitHub.
 2. Change the Container Registry Plan
 
+Limitations:
+
+1. Git needs to by IBM Whitewater
+2. No git token at the moment so no service api key only account api keys, otherwise liking git repos does not work because the service has no access
+
+==> solution could be only use generic git and a need to provide a token to access teh repo.
+
 ## TLDR
 
 Fast start steps either from local machine or from IBM Cloud via **Schematics**.
