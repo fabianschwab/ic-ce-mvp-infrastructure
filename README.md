@@ -129,6 +129,37 @@ This will create all the resources and but is not yet deploying the application.
 6. Run `terraform plan` to see what will be created
 7. Run `terraform apply` to create the infrastructure
 
+## Resources
+
+When running this Terraform script, the following resources are created:
+
+1. Resource Group
+2. Container Registry Namespace
+   - With a retention policy of 3 images per repository
+   - The name has a random suffix to avoid collisions
+3. PostgreSQL Instance (optional)
+   - Service Credentials
+4. Code Engine Project
+   - Secrets (including PostgreSQL credentials if database is created)
+   - Code Engine Applications (including OAuth Proxy)
+5. Continuous Delivery Service for executing Tekton pipelines
+6. Toolchain
+   - Linked Repositories:
+     - Code repository (provided as a variable)
+     - Tekton pipeline repository
+     - Tekton catalog repository
+   - Delivery Pipeline:
+     - Tekton Pipeline Definition
+     - Tekton Pipeline Environment Properties
+     - Tekton Pipeline Triggers (Manual and Git trigger for 'main' branch commits)
+7. AppID Instance
+   - Service Credentials for OAuth2Proxy
+   - Valid Redirect URL to proxy
+
+![Resources Overview](assets/exports/resources.excalidraw.png)
+
+The script also sets up necessary connections between these resources, such as binding the AppID instance to the Code Engine project and configuring the Toolchain with the appropriate repositories and pipeline settings.
+
 ## Configure Infrastructure
 
 Before you create all the infrastructure you can modify it by providing a few values.
@@ -154,39 +185,54 @@ The `code_repository_url` is also provided. It is the URL to the code repository
 
 The database is not reachable from outside the cloud account for security reasons. If you want to change this, consider changing the `pg_database_endpoint` variable to `public` or `public-and-private`.
 
-## Configure Pipeline
+## Configure Code Engine Deployment Pipeline
 
-<!-- URL: Valid values are 'public', 'private' and 'project'. -->
+The Tekton pipeline is configured to build and deploy applications to IBM Code Engine. It uses a container-based build process that creates an image from your application's Dockerfile and deploys it to the Code Engine project. The pipeline is triggered automatically on commits to the main branch or can be run manually through the toolchain interface.
 
-### Add additional pipelines
+To access and configure the toolchain settings in the IBM Cloud UI:
 
-<!-- TODO -->
+1. Log in to your IBM Cloud account.
+2. Navigate to the "Platform Automation" section in the main menu.
+3. Select "Toolchains" from the submenu.
+4. Find and click on the toolchain you created for this project.
+5. In the toolchain overview, you'll see all the integrated tools, including the Delivery Pipeline.
+6. Click on the Delivery Pipeline name to access its settings.
+7. In the Delivery Pipeline interface, you can view and edit the pipeline's environment properties, triggers, and stages by clicking in the **Settings** button in the upper right corner.
 
-#### Test
+The following table describes the environment variables that can be configured for the pipeline:
 
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant O as OAuth2 Proxy
-    participant P as Protected Resource
-    participant Auth as Authentication Provider
+| Variable            | Description                                                                |
+| ------------------- | -------------------------------------------------------------------------- |
+| app-name            | Name of the application to be deployed in Code Engine                      |
+| ibmcloud-api        | IBM Cloud API endpoint for authentication                                  |
+| repository          | Git repository URL containing the application code                         |
+| branch              | Git branch to build from (defaults to main)                                |
+| revision            | Specific git commit hash to build (optional)                               |
+| git-token           | Token for Git authentication                                               |
+| region              | IBM Cloud region where resources will be deployed                          |
+| resource-group      | Resource group containing the Code Engine project                          |
+| code-engine-project | Name of the Code Engine project                                            |
+| service-bindings    | Semi-colon separated list of service bindings to attach to the application |
+| env-from-configmaps | Semi-colon separated list of ConfigMaps to set environment variables from  |
+| env-from-secrets    | Semi-colon separated list of Secrets to set environment variables from     |
+| cpu                 | Amount of vCPU allocated per instance (default: "0.25")                    |
+| memory              | Amount of memory allocated per instance (default: "0.5G")                  |
+| ephemeral-storage   | Amount of ephemeral storage per instance (default: "0.4G")                 |
+| app-max-scale       | Maximum number of instances to scale to (default: "1")                     |
+| app-min-scale       | Minimum number of instances to maintain (default: "0")                     |
+| app-port            | Port where the application listens (default: "8080")                       |
+| app-visibility      | Application visibility setting - 'public', 'private' or 'project'          |
+| pipeline-debug      | Enable debug logging in pipeline (default: "0")                            |
 
-    C->>+O: Request Protected Resource
-    alt Not Authenticated
-        O->>Auth: Redirect to Login Page
-        Auth-->>C: Show Login Form
-        C->>Auth: Enter Credentials
-        Auth-->>O: Return Authorization Code
-        O->>O: Validate & Create Session
-    else Already Authenticated
-        O->>O: Check Existing Session
-    end
+The pipeline automatically manages secure properties through the secure-properties secret, which contains the necessary API keys and credentials for accessing IBM Cloud services. This secret is automatically injected into the pipeline environment by the Continuous Delivery Tekton Pipeline support system.
 
-    alt Valid Session
-        O->>+P: Forward Request
-        P-->>-O: Response
-        O-->>-C: Protected Resource
-    else Invalid Session
-        O->>Auth: Redirect to Login Page
-    end
-```
+## Customize Tekton Pipeline
+
+The Tekton pipeline steps and tasks can be customized by modifying the code in the tekton-catalog and tekton-pipeline repositories. To make changes:
+
+1. Fork the tekton-catalog and tekton-pipeline repositories.
+2. Modify the pipeline steps and tasks in your forked repositories as needed.
+3. Update the `repository_url_pipeline` and `repository_url_pipeline_catalog` variables in the terraform script to point to your forked repositories.
+4. Re-run the terraform script to apply the changes to your pipeline.
+
+This process allows you to tailor the pipeline to your specific needs while maintaining the ability to easily update and manage your infrastructure.
