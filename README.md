@@ -161,3 +161,32 @@ The database is not reachable from outside the cloud account for security reason
 ### Add additional pipelines
 
 <!-- TODO -->
+
+#### Test
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant O as OAuth2 Proxy
+    participant P as Protected Resource
+    participant Auth as Authentication Provider
+
+    C->>+O: Request Protected Resource
+    alt Not Authenticated
+        O->>Auth: Redirect to Login Page
+        Auth-->>C: Show Login Form
+        C->>Auth: Enter Credentials
+        Auth-->>O: Return Authorization Code
+        O->>O: Validate & Create Session
+    else Already Authenticated
+        O->>O: Check Existing Session
+    end
+
+    alt Valid Session
+        O->>+P: Forward Request
+        P-->>-O: Response
+        O-->>-C: Protected Resource
+    else Invalid Session
+        O->>Auth: Redirect to Login Page
+    end
+```
