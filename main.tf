@@ -65,23 +65,24 @@ module "postgresql" {
 module "toolchain" {
   source = "./modules/toolchain"
 
-  resource_group_id               = ibm_resource_group.group.id
-  repository_url_pipeline         = var.repository_url_pipeline
-  repository_url_pipeline_catalog = var.repository_url_pipeline_catalog
+  resource_group_id           = ibm_resource_group.group.id
+  repository_pipeline         = var.repository_pipeline
+  repository_pipeline_catalog = var.repository_pipeline_catalog
 }
 
-module "cicd" {
-  source   = "./modules/cicd"
+module "ci_cd_pipeline" {
+  source   = "./modules/ci-cd-pipeline"
   for_each = { for idx, repo in var.code_repositories : idx => repo }
 
   code_repository_url             = each.value.url
+  code_repository_provider        = each.value.provider
   root_folder                     = each.value.root_folder
   name                            = each.value.name
   visibility                      = each.value.visibility
   ci_cd_toolchain_id              = module.toolchain.toolchain_id
   resource_group_id               = ibm_resource_group.group.id
-  repository_url_pipeline         = var.repository_url_pipeline
-  repository_url_pipeline_catalog = var.repository_url_pipeline_catalog
+  repository_url_pipeline         = var.repository_pipeline.url
+  repository_url_pipeline_catalog = var.repository_pipeline_catalog.url
   ibm_cloud_api_key               = var.ibm_cloud_api_key
   code_engine_project_name        = var.code_engine_project_name
   resource_group_name             = var.resource_group_name

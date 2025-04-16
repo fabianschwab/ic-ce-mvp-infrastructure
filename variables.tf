@@ -68,26 +68,67 @@ variable "toolchain" {
 
 variable "code_repositories" {
   type = list(object({
+    provider    = string
     url         = string
-    # token       = { type = string, sensitive = true }
+    token       = string
     root_folder = string
     name        = string
     visibility  = string
   }))
   validation {
+    condition     = alltrue([for repo in var.code_repositories : contains(["github", "gitlab", "other"])])
+    error_message = "Invalid provider value. Valid values are 'github', 'gitlab' and 'other'."
+  }
+  validation {
     condition     = alltrue([for repo in var.code_repositories : contains(["public", "private", "project"], repo.visibility)])
     error_message = "Invalid visibility value. Valid values are 'public', 'private' and 'project'."
   }
-  description = "List of services to deploy."
+  validation {
+    condition     = alltrue([for repo in var.code_repositories : repo.provider != "other" || (repo.provider == "other" && repo.token != null && repo.token != "")])
+    error_message = "Token is required when provider is set to 'other'."
+  }
+
+  description = "List of services to deploy. Consolidate the `Readme.md` for structure of the list and containing object if unsure."
 }
 
-variable "repository_url_pipeline" {
-  type        = string
-  description = "URL of the code repository the pipeline should build"
-  default     = "https://github.com/fabianschwab/ic-ce-tekton-pipeline.git"
+variable "repository_pipeline" {
+  type = object({
+    provider = string
+    url      = string
+    token    = string
+  })
+  default = { provider = "github", url = "https://github.com/fabianschwab/ic-ce-tekton-pipeline.git", token = "" }
+
+  validation {
+    condition     = contains(["github", "gitlab", "other"], var.repository_pipeline.provider)
+    error_message = "Invalid provider value. Valid values are 'github', 'gitlab' and 'other'."
+  }
+
+  validation {
+    condition     = (var.repository_pipeline.provider == "other" && var.repository_pipeline.token != null && var.repository_pipeline.token != "") || var.repository_pipeline.provider != "other"
+    error_message = "Token is required when provider is set to 'other'."
+  }
+
+  description = "URL of the code repository the pipeline should build. See `Readme.md` for object info."
 }
-variable "repository_url_pipeline_catalog" {
-  type        = string
-  description = "URL of the code repository the pipeline should build"
-  default     = "https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git"
+
+variable "repository_pipeline_catalog" {
+  type = object({
+    provider = string
+    url      = string
+    token    = string
+  })
+  default = { provider = "github", url = "https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git", token = "" }
+
+  validation {
+    condition     = contains(["github", "gitlab", "other"], var.repository_pipeline_catalog.provider)
+    error_message = "Invalid provider value. Valid values are 'github', 'gitlab' and 'other'."
+  }
+
+  validation {
+    condition     = (var.repository_pipeline_catalog.provider == "other" && var.repository_pipeline.token != null && var.repository_pipeline.token != "") || var.repository_pipeline_catalog.provider != "other"
+    error_message = "Token is required when provider is set to 'other'."
+  }
+
+  description = "URL of the code repository the pipeline should build. See `Readme.md` for object info."
 }
