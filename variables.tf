@@ -76,7 +76,7 @@ variable "code_repositories" {
     visibility  = string
   }))
   validation {
-    condition     = alltrue([for repo in var.code_repositories : contains(["github", "gitlab", "other"])])
+    condition     = alltrue([for repo in var.code_repositories : contains(["github", "gitlab", "other"], repo.provider)])
     error_message = "Invalid provider value. Valid values are 'github', 'gitlab' and 'other'."
   }
   validation {
