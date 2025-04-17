@@ -2,15 +2,14 @@
 
 Important:
 
-1. Your IBM account must be connected to the IBM GitHub.
-2. Change the Container Registry Plan
+1. Your IBM account must be connected to the git services you use. [See your connected services here](https://cloud.ibm.com/devop/git).
+2. Change the Container Registry Plan if your images are bigger than 1 GB.
 
-Limitations:
+Open Issues:
 
-1. Git needs to by IBM Whitewater
-2. No git token at the moment so no service api key only account api keys, otherwise liking git repos does not work because the service has no access
-
-==> solution could be only use generic git and a need to provide a token to access teh repo.
+[ ] No git token at the moment.
+[ ] No service api key only account api keys, otherwise linking git repos does not work because the service has no access.
+[ ] No reverse proxy when exposing multiple services with oauth proxy.
 
 ## TLDR
 
@@ -51,7 +50,7 @@ Steps:
 You be redirected to the workspace page.
 
 1. Goto *Settings* tab and change the variables as needed.
-   1. Needed are `ibm_cloud_api_key` and `code_repository_url`
+   1. Needed are `ibm_cloud_api_key` and `code_repositories`
 2. Click *Plan* and then *Apply*
 
 ## Overview
@@ -165,25 +164,46 @@ The script also sets up necessary connections between these resources, such as b
 Before you create all the infrastructure you can modify it by providing a few values.
 Most of them have default values and are fine as they are but some needed to be changed.
 
-| Name                            | Description                                                                                                 | Type   | Default                                                           | Sensitive |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------ | ----------------------------------------------------------------- | --------- |
-| ibm_cloud_api_key               | IAM API Key                                                                                                 | string |                                                                   | true      |
-| ibm_region                      | Region and zone the resources should be created in.                                                         | string | eu-de                                                             |           |
-| resource_group_name             | Name of resource group to provision resources.                                                              | string | development                                                       |           |
-| code_engine_project_name        | Name for the CodeEngine project which holds the applications                                                | string | mvp-development                                                   |           |
-| container_registry_name         | Container registry namespace name which holds the images for the applications                               | string | mvp-images                                                        |           |
-| pg_database_name                | Name of the PostgreSQL database service                                                                     | string | mvp-database                                                      |           |
-| pg_database_endpoint            | Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'. | string | private                                                           |           |
-| toolchain                       | Name of the automation Toolchain                                                                            | string | code-engine-deployment                                            |           |
-| code_repository_url             | URL of the code repository to build                                                                         | string |                                                                   |           |
-| repository_url_pipeline         | URL of the code repository the pipeline should build                                                        | string | https://github.com/fabianschwab/ic-ce-tekton-pipeline.git         |           |
-| repository_url_pipeline_catalog | URL of the code repository the pipeline should build                                                        | string | https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git |           |
+| Name                        | Description                                                                                                 | Type   | Default                                                           | Sensitive |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------- | ------ | ----------------------------------------------------------------- | --------- |
+| ibm_cloud_api_key           | IAM API Key                                                                                                 | string |                                                                   | true      |
+| ibm_region                  | Region and zone the resources should be created in.                                                         | string | eu-de                                                             |           |
+| resource_group_name         | Name of resource group to provision resources.                                                              | string | development                                                       |           |
+| code_engine_project_name    | Name for the CodeEngine project which holds the applications                                                | string | mvp-development                                                   |           |
+| container_registry_name     | Container registry namespace name which holds the images for the applications                               | string | mvp-images                                                        |           |
+| pg_database_name            | Name of the PostgreSQL database service                                                                     | string | mvp-database                                                      |           |
+| pg_database_endpoint        | Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'. | string | private                                                           |           |
+| toolchain                   | Name of the automation Toolchain                                                                            | string | code-engine-deployment                                            |           |
+| code_repositories           | Information about the code repositories to build                                                            | object |                                                                   |           |
+| repository_pipeline         | Repository which holds the tekton pipeline, trigger and so on                                               | object | https://github.com/fabianschwab/ic-ce-tekton-pipeline.git         |           |
+| repository_pipeline_catalog | A collection of tekton pipeline steps which can be added to the pipeline                                    | object | https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git |           |
 
 The `ibm_cloud_api_key` is a value which is sensitive and should be provided as a secret. This api key is also used to deploy the application on code engine, so do not delete it after the infrastructure is created.
 
-The `code_repository_url` is also provided. It is the URL to the code repository which should be deployed. This repository must contain a `Dockerfile` as the pipeline will build the image and deploy it to code engine.
-
 The database is not reachable from outside the cloud account for security reasons. If you want to change this, consider changing the `pg_database_endpoint` variable to `public` or `public-and-private`.
+
+### Code Repositories Configuration
+
+The `code_repositories` variable accepts a list of repository configurations with the following structure:
+
+```hcl
+code_repositories = [
+  {
+    provider    = string # Repository provider: "github", "gitlab", or "other"
+    url         = string # Repository URL
+    token       = string # Access token (required when provider is "other")
+    root_folder = string # Root folder containing the source code
+    name        = string # Name identifier for the repository
+    visibility  = string # Repository visibility: "public", "private", or "project"
+  }
+]
+```
+
+Validation Rules:
+
+- `provider` must be one of: "github", "gitlab", or "other"
+- `visibility` must be one of: "public", "private", or "project"
+- When `provider` is set to "other", a non-empty `token` is required
 
 ## Configure Code Engine Deployment Pipeline
 
