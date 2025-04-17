@@ -45,9 +45,10 @@ resource "ibm_cd_toolchain" "ci_cd_toolchain" {
 }
 
 # Repository: Connect git repositories to the toolchain which define the ci-cd pipeline and tasks
+# Github type pipeline or catalog
 resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_repository" {
 
-  count = var.repository_pipeline_catalog.provider == "github" ? 1 : 0
+  count = var.repository_pipeline.provider == "github" ? 1 : 0
 
   toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
   initialization {
@@ -76,9 +77,10 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_catalog" {
   }
 }
 
+# Gitlab type pipeline or catalog
 resource "ibm_cd_toolchain_tool_gitlab" "tekton_repository" {
 
-  count = var.repository_pipeline_catalog.provider == "github" ? 1 : 0
+  count = var.repository_pipeline.provider == "gitlab" ? 1 : 0
 
   toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
   initialization {
@@ -107,9 +109,10 @@ resource "ibm_cd_toolchain_tool_gitlab" "tekton_catalog" {
   }
 }
 
+# Other git type pipeline or catalog
 resource "ibm_cd_toolchain_tool_hostedgit" "tekton_repository" {
 
-  count = var.repository_pipeline_catalog.provider == "gitlab" ? 1 : 0
+  count = var.repository_pipeline.provider == "other" ? 1 : 0
 
   toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
   initialization {
@@ -124,7 +127,7 @@ resource "ibm_cd_toolchain_tool_hostedgit" "tekton_repository" {
 }
 resource "ibm_cd_toolchain_tool_hostedgit" "tekton_catalog" {
 
-  count = var.repository_pipeline_catalog.provider == "github" ? 1 : 0
+  count = var.repository_pipeline_catalog.provider == "other" ? 1 : 0
 
   toolchain_id = ibm_cd_toolchain.ci_cd_toolchain.id
   initialization {
