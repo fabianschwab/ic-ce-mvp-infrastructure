@@ -18,7 +18,7 @@ locals {
       "githubcustom"
       ) : var.code_repository_provider == "gitlab" ? (
       can(regex("^https://gitlab\\.com/", var.code_repository_url)) ? "gitlab" :
-      can(regex("^https://[^/]+\\.git\\.cloud\\.ibm\\.com/", var.code_repository_url)) ? "integrated" :
+      can(regex("^https://[^/]+\\.git\\.cloud\\.ibm\\.com/", var.code_repository_url)) ? "gitlabcustom" :
       "gitlabcustom"
     ) : "hostedgit"
   )
@@ -175,7 +175,7 @@ resource "ibm_cd_tekton_pipeline_trigger" "cd_tekton_pipeline_trigger_manual" {
   type                = "manual"
 }
 resource "ibm_cd_tekton_pipeline_trigger" "cd_tekton_pipeline_trigger_commit" {
-  event_listener      = "github-commit"
+  event_listener      = "git-commit"
   max_concurrent_runs = 1
   name                = "Git Commit Trigger"
   pipeline_id         = ibm_cd_tekton_pipeline.tekton_pipeline.id
