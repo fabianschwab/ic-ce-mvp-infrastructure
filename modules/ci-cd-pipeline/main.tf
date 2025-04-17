@@ -18,7 +18,7 @@ locals {
       "githubcustom"
       ) : var.code_repository_provider == "gitlab" ? (
       can(regex("^https://gitlab\\.com/", var.code_repository_url)) ? "gitlab" :
-      can(regex("^https://[^/]+\\.git\\.cloud\\.ibm\\.com/", var.code_repository_url)) ? "gitlabcustom" :
+      can(regex("^https://[^/]+\\.git\\.cloud\\.ibm\\.com/", var.code_repository_url)) ? "gitlab" :
       "gitlabcustom"
     ) : "hostedgit"
   )
@@ -43,7 +43,6 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
 resource "ibm_cd_toolchain_tool_gitlab" "code_repository" {
   count        = var.code_repository_provider == "gitlab" ? 1 : 0
   toolchain_id = var.ci_cd_toolchain_id
-  name         = "Repository" # Adding required name parameter according to error not to docs
   initialization {
     git_id   = local.id
     repo_url = var.code_repository_url
