@@ -164,19 +164,19 @@ The script also sets up necessary connections between these resources, such as b
 Before you create all the infrastructure you can modify it by providing a few values.
 Most of them have default values and are fine as they are but some needed to be changed.
 
-| Name                        | Description                                                                                                 | Type   | Default                                                           | Sensitive |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------- | ------ | ----------------------------------------------------------------- | --------- |
-| ibm_cloud_api_key           | IAM API Key                                                                                                 | string |                                                                   | true      |
-| ibm_region                  | Region and zone the resources should be created in.                                                         | string | eu-de                                                             |           |
-| resource_group_name         | Name of resource group to provision resources.                                                              | string | development                                                       |           |
-| code_engine_project_name    | Name for the CodeEngine project which holds the applications                                                | string | mvp-development                                                   |           |
-| container_registry_name     | Container registry namespace name which holds the images for the applications                               | string | mvp-images                                                        |           |
-| pg_database_name            | Name of the PostgreSQL database service                                                                     | string | mvp-database                                                      |           |
-| pg_database_endpoint        | Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'. | string | private                                                           |           |
-| toolchain                   | Name of the automation Toolchain                                                                            | string | code-engine-deployment                                            |           |
-| code_repositories           | Information about the code repositories to build                                                            | object |                                                                   |           |
-| repository_pipeline         | Repository which holds the tekton pipeline, trigger and so on                                               | object | https://github.com/fabianschwab/ic-ce-tekton-pipeline.git         |           |
-| repository_pipeline_catalog | A collection of tekton pipeline steps which can be added to the pipeline                                    | object | https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git |           |
+| Name                        | Description                                                                                                 | Type   | Default                | Sensitive |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------- | ------ | ---------------------- | --------- |
+| ibm_cloud_api_key           | IAM API Key                                                                                                 | string |                        | true      |
+| ibm_region                  | Region and zone the resources should be created in.                                                         | string | eu-de                  |           |
+| resource_group_name         | Name of resource group to provision resources.                                                              | string | development            |           |
+| code_engine_project_name    | Name for the CodeEngine project which holds the applications                                                | string | mvp-development        |           |
+| container_registry_name     | Container registry namespace name which holds the images for the applications                               | string | mvp-images             |           |
+| pg_database_name            | Name of the PostgreSQL database service                                                                     | string | mvp-database           |           |
+| pg_database_endpoint        | Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'. | string | private                |           |
+| toolchain                   | Name of the automation Toolchain                                                                            | string | code-engine-deployment |           |
+| code_repositories           | Information about the code repositories to build                                                            | object |                        |           |
+| repository_pipeline         | Repository which holds the tekton pipeline, trigger and so on                                               | object |                        |           |
+| repository_pipeline_catalog | A collection of tekton pipeline steps which can be added to the pipeline                                    | object |                        |           |
 
 The `ibm_cloud_api_key` is a value which is sensitive and should be provided as a secret. This api key is also used to deploy the application on code engine, so do not delete it after the infrastructure is created.
 

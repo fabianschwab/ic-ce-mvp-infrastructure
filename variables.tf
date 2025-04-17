@@ -69,8 +69,8 @@ variable "toolchain" {
 variable "code_repositories" {
   type = list(object({
     provider    = string
-    url         = string
     token       = string
+    url         = string
     root_folder = string
     name        = string
     visibility  = string
@@ -94,10 +94,10 @@ variable "code_repositories" {
 variable "repository_pipeline" {
   type = object({
     provider = string
-    url      = string
     token    = string
+    url      = string
   })
-  default = { provider = "github", url = "https://github.com/fabianschwab/ic-ce-tekton-pipeline.git", token = "" }
+  default = { provider = "github", token = "", url = "https://github.com/fabianschwab/ic-ce-tekton-pipeline.git" }
 
   validation {
     condition     = contains(["github", "gitlab", "other"], var.repository_pipeline.provider)
@@ -115,10 +115,10 @@ variable "repository_pipeline" {
 variable "repository_pipeline_catalog" {
   type = object({
     provider = string
-    url      = string
     token    = string
+    url      = string
   })
-  default = { provider = "github", url = "https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git", token = "" }
+  default = { provider = "github", token = "", url = "https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git" }
 
   validation {
     condition     = contains(["github", "gitlab", "other"], var.repository_pipeline_catalog.provider)

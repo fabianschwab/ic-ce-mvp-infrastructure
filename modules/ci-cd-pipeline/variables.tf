@@ -17,32 +17,10 @@ variable "repository_url_pipeline" {
   description = "URL of the pipeline repository"
 }
 
-# variable "repository_provider_pipeline" {
-#   type        = string
-#   description = "Provider of the pipeline repository"
-
-#   validation {
-#     condition     = contains(["github", "gitlab", "other"], var.repository_provider_pipeline)
-#     error_message = "Invalid provider value. Valid values are 'github', 'gitlab' and 'other'."
-#   }
-
-# }
-
 variable "repository_url_pipeline_catalog" {
   type        = string
   description = "URL of the pipeline catalog repository"
 }
-
-# variable "repository_provider_pipeline_catalog" {
-#   type        = string
-#   description = "Provider of the pipeline catalog repository"
-
-#   validation {
-#     condition     = contains(["github", "gitlab", "other"], var.repository_provider_pipeline_catalog)
-#     error_message = "Invalid provider value. Valid values are 'github', 'gitlab' and 'other'."
-#   }
-
-# }
 
 variable "code_repository_url" {
   type        = string

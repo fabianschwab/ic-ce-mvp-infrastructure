@@ -7,8 +7,8 @@ variable "resource_group_id" {
 variable "repository_pipeline" {
   type = object({
     provider = string
-    url      = string
     token    = string
+    url      = string
   })
   default = { provider = "github", url = "https://github.com/fabianschwab/ic-ce-tekton-pipeline.git", token = "" }
 
@@ -28,8 +28,8 @@ variable "repository_pipeline" {
 variable "repository_pipeline_catalog" {
   type = object({
     provider = string
-    url      = string
     token    = string
+    url      = string
   })
   default = { provider = "github", url = "https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git", token = "" }
 
