@@ -1,72 +1,68 @@
+
 locals {
-  # Determines the git provider ID based on the repository URL and provider type
-  # Logic:
-  # 1. If provider is "github":
-  #    - Returns "github" if URL matches github.com
-  #    - Returns "integrated" if URL matches github.ibm.com
-  #    - Returns "githubcustom" for any other URL
-  # 2. If provider is "gitlab":
-  #    - Returns "github" if URL matches gitlab.com
-  #    - Returns "integrated" if URL matches any-region.git.cloud.ibm.com
-  #    - Returns "gitlabcustom" for any other URL
-  # 3. For any 'other' provider:
-  #    - Returns "hostedgit" for any other URL
+  # Determines the git provider ID based on the repository URL
+  # This is needed to create different resources due to IBM cloud provider specific treatments of git platforms
+  # For this only github.com, ibm.github.com, gitlab.com and git.cloud.ibm.com are supported.
+  # Others are possible but not implemented because this would increase complexity and is not used ce projects
+
   id = (
-    var.code_repository_provider == "github" ? (
-      can(regex("^https://github\\.com/", var.code_repository_url)) ? "github" :
-      can(regex("^https://github\\.ibm\\.com/", var.code_repository_url)) ? "integrated" :
-      "githubcustom"
-      ) : var.code_repository_provider == "gitlab" ? (
-      can(regex("^https://gitlab\\.com/", var.code_repository_url)) ? "gitlab" :
-      can(regex("^https://[^/]+\\.git\\.cloud\\.ibm\\.com/", var.code_repository_url)) ? "gitlab" :
-      "gitlabcustom"
-    ) : "hostedgit"
+    can(regex("^https://github\\.com/", var.code_repository_url)) ? "github" :
+    can(regex("^https://github\\.ibm\\.com/", var.code_repository_url)) ? "integrated" :
+    can(regex("^https://gitlab\\.com/", var.code_repository_url)) ? "gitlab" :
+    can(regex("^https://[^/]+\\.git\\.cloud\\.ibm\\.com/", var.code_repository_url)) ? "hostedgit" : ""
   )
-
 }
 
+# ---------- Pipeline ------------
+# For pipeline on github.com or github.ibm.com
 resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
-  count        = var.code_repository_provider == "github" ? 1 : 0
+
+  count = local.id == "github" || local.id == "integrated" ? 1 : 0
+
   toolchain_id = var.ci_cd_toolchain_id
   initialization {
     git_id   = local.id
-    repo_url = var.code_repository_url
     type     = "link"
+    repo_url = var.code_repository_url
   }
   parameters {
     git_id   = local.id
     repo_url = var.code_repository_url
-    type     = "link"
   }
 }
 
+# For pipeline on gitlab.com
 resource "ibm_cd_toolchain_tool_gitlab" "code_repository" {
-  count        = var.code_repository_provider == "gitlab" ? 1 : 0
+
+  count = local.id == "gitlab" ? 1 : 0
+
   toolchain_id = var.ci_cd_toolchain_id
   initialization {
     git_id   = local.id
-    repo_url = var.code_repository_url
     type     = "link"
+    repo_url = var.code_repository_url
   }
   parameters {
     git_id   = local.id
     repo_url = var.code_repository_url
-    type     = "link"
   }
 }
 
+# For pipeline on git.cloud.ibm.com
 resource "ibm_cd_toolchain_tool_hostedgit" "code_repository" {
-  count        = var.code_repository_provider == "other" ? 1 : 0
+
+  count = local.id == "hostedgit" ? 1 : 0
+
   toolchain_id = var.ci_cd_toolchain_id
   initialization {
     git_id   = local.id
-    repo_url = var.code_repository_url
     type     = "link"
+    repo_url = var.code_repository_url
   }
   parameters {
     git_id   = local.id
-    repo_url = var.code_repository_url
     type     = "link"
+    repo_url = var.code_repository_url
   }
 }
 

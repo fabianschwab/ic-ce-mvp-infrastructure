@@ -27,16 +27,6 @@ variable "code_repository_url" {
   description = "URL of the code repository"
 }
 
-variable "code_repository_provider" {
-  type        = string
-  description = "Provider of the code repository"
-
-  validation {
-    condition     = contains(["github", "gitlab", "other"], var.code_repository_provider)
-    error_message = "Invalid provider value. Valid values are 'github', 'gitlab' and 'other'."
-  }
-}
-
 variable "root_folder" {
   type        = string
   description = "Root folder of the source code and Dockerfile"

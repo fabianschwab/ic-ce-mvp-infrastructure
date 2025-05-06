@@ -75,7 +75,6 @@ module "ci_cd_pipeline" {
   for_each = { for idx, repo in var.code_repositories : idx => repo }
 
   code_repository_url             = each.value.url
-  code_repository_provider        = each.value.provider
   root_folder                     = each.value.root_folder
   name                            = each.value.name
   visibility                      = each.value.visibility
