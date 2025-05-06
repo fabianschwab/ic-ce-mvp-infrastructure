@@ -189,9 +189,8 @@ The `code_repositories` variable accepts a list of repository configurations wit
 ```hcl
 code_repositories = [
   {
-    provider    = string # Repository provider: "github", "gitlab", or "other"
     url         = string # Repository URL
-    token       = string # Access token (required when provider is "other")
+    token       = string # Access token
     root_folder = string # Root folder containing the source code
     name        = string # Name identifier for the repository
     visibility  = string # Repository visibility: "public", "private", or "project"
@@ -201,9 +200,7 @@ code_repositories = [
 
 Validation Rules:
 
-- `provider` must be one of: "github", "gitlab", or "other"
 - `visibility` must be one of: "public", "private", or "project"
-- When `provider` is set to "other", a non-empty `token` is required
 
 ## Configure Code Engine Deployment Pipeline
 
