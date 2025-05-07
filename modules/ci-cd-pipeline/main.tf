@@ -13,8 +13,8 @@ locals {
   )
 }
 
-# ---------- Pipeline ------------
-# For pipeline on github.com or github.ibm.com
+# ---------- Linking Code Repo ------------
+# For code repo on github.com or github.ibm.com
 resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
 
   count = local.id == "github" || local.id == "integrated" ? 1 : 0
@@ -31,7 +31,7 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
   }
 }
 
-# For pipeline on gitlab.com
+# For code repo on gitlab.com
 resource "ibm_cd_toolchain_tool_gitlab" "code_repository" {
 
   count = local.id == "gitlab" ? 1 : 0
@@ -48,7 +48,7 @@ resource "ibm_cd_toolchain_tool_gitlab" "code_repository" {
   }
 }
 
-# For pipeline on git.cloud.ibm.com
+# For code repo on git.cloud.ibm.com
 resource "ibm_cd_toolchain_tool_hostedgit" "code_repository" {
 
   count = local.id == "hostedgit" ? 1 : 0
@@ -66,15 +66,18 @@ resource "ibm_cd_toolchain_tool_hostedgit" "code_repository" {
   }
 }
 
-# Delivery: Pipeline
+# -----------------------------------------------------------------
+# ------------------------ CI/CD Pipeline ------------------------
+
+# Toolchain pipeline
 resource "ibm_cd_toolchain_tool_pipeline" "ci_cd_pipeline" {
   toolchain_id = var.ci_cd_toolchain_id
   parameters {
     name = var.name
   }
 }
-# -----------------------------------------------------------------
-# ------------------------ Tekton Pipeline ------------------------
+
+# Tekton type pipeline
 resource "ibm_cd_tekton_pipeline" "tekton_pipeline" {
   worker {
     id = "public"
