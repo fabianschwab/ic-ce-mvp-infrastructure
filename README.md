@@ -7,9 +7,9 @@ Important:
 
 Open Issues:
 
-[ ] No git token at the moment.
-[ ] No service api key only account api keys, otherwise linking git repos does not work because the service has no access.
+[ ] Change to auth type `pat` to use git token to authenticate so use with service ID api keys is possible.
 [ ] No reverse proxy when exposing multiple services with oauth proxy.
+[ ] Find a way to store the git token in a secure manner.
 
 ## TLDR
 
@@ -23,7 +23,7 @@ Prerequisites:
 2. Create an IBM Cloud API Key
 3. Provide the following values in the `terraform.tfvars` file or when prompted on the cli:
    1. `ibmcloud_api_key` - IBM Cloud API Key
-   2. `code_repository_url` - URL to the code repository to be deployed
+   2. `code_repositories` - URL to the git repository and access token to clone it
 
 ```sh
 git clone https://github.com/fabianschwab/ic-ce-mvp-infrastructure.git
