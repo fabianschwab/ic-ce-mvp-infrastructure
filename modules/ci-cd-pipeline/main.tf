@@ -26,8 +26,10 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "code_repository" {
     repo_url = var.code_repository_url
   }
   parameters {
-    git_id   = local.id
-    repo_url = var.code_repository_url
+    git_id    = local.id
+    repo_url  = var.code_repository_url
+    auth_type = "pat"
+    api_token = var.code_repository_url_token
   }
 }
 
@@ -43,8 +45,10 @@ resource "ibm_cd_toolchain_tool_gitlab" "code_repository" {
     repo_url = var.code_repository_url
   }
   parameters {
-    git_id   = local.id
-    repo_url = var.code_repository_url
+    git_id    = local.id
+    repo_url  = var.code_repository_url
+    auth_type = "pat"
+    api_token = var.code_repository_url_token
   }
 }
 
@@ -60,9 +64,10 @@ resource "ibm_cd_toolchain_tool_hostedgit" "code_repository" {
     repo_url = var.code_repository_url
   }
   parameters {
-    git_id   = local.id
-    type     = "link"
-    repo_url = var.code_repository_url
+    git_id    = local.id
+    repo_url  = var.code_repository_url
+    auth_type = "pat"
+    api_token = var.code_repository_url_token
   }
 }
 
@@ -334,8 +339,8 @@ resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_22" {
 resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_23" {
   name        = "git-token"
   pipeline_id = ibm_cd_tekton_pipeline.tekton_pipeline.id
-  type        = "text"
-  value       = ""
+  type        = "secure"
+  value       = var.code_repository_url_token
 }
 resource "ibm_cd_tekton_pipeline_property" "cd_tekton_pipeline_property_24" {
   name        = "ibmcloud-api"

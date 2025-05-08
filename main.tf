@@ -8,8 +8,9 @@ terraform {
 }
 
 locals {
-  oauth2proxy_name = "oauth2proxy"
-  proxy_url        = "https://${local.oauth2proxy_name}.${module.code_engine.code_engine_namespace}.${var.ibm_region}.codeengine.appdomain.cloud"
+  oauth2proxy_name    = "oauth2proxy"
+  appid_instance_name = "auth-provider"
+  proxy_url           = "https://${local.oauth2proxy_name}.${module.code_engine.code_engine_namespace}.${var.ibm_region}.codeengine.appdomain.cloud"
 }
 
 provider "ibm" {
@@ -75,6 +76,7 @@ module "ci_cd_pipeline" {
   for_each = { for idx, repo in var.code_repositories : idx => repo }
 
   code_repository_url             = each.value.url
+  code_repository_url_token       = each.value.token
   root_folder                     = each.value.root_folder
   name                            = each.value.name
   visibility                      = each.value.visibility
@@ -100,7 +102,7 @@ module "cd_service" {
 module "appid" {
   source = "./modules/appid"
 
-  name              = "auth-provider"
+  name              = local.appid_instance_name
   region            = var.ibm_region
   resource_group_id = ibm_resource_group.group.id
   redirect_urls     = var.use_oauth2proxy ? ["${local.proxy_url}/oauth2/callback"] : []

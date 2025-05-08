@@ -27,6 +27,12 @@ variable "code_repository_url" {
   description = "URL of the code repository"
 }
 
+variable "code_repository_url_token" {
+  type        = string
+  description = "Access token for the code repository"
+  sensitive   = true
+}
+
 variable "root_folder" {
   type        = string
   description = "Root folder of the source code and Dockerfile"
