@@ -68,7 +68,6 @@ variable "toolchain" {
 
 variable "code_repositories" {
   type = list(object({
-    token       = string
     url         = string
     root_folder = string
     name        = string
@@ -86,6 +85,7 @@ variable "code_repositories" {
 variable "code_repositories_token" {
   type        = map(string)
   description = "Map of repository URLs to their access tokens. The URL is the key, and the token is the value."
+  sensitive   = true
 }
 
 variable "repository_pipeline_url" {

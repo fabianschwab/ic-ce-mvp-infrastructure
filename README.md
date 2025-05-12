@@ -196,12 +196,16 @@ The `code_repositories` variable accepts a list of repository configurations wit
 code_repositories = [
   {
     url         = string # Repository URL
-    token       = string # Access token
     root_folder = string # Root folder containing the source code
     name        = string # Name identifier for the repository
     visibility  = string # CodeEngine application visibility: "public", "private", or "project"
   }
 ]
+
+# Key-Value map where the key is the url and the value the access token
+code_repositories_token = {
+  repo-url = repo-token
+}
 ```
 
 Validation Rules:
