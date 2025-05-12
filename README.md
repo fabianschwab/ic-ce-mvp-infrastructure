@@ -7,9 +7,9 @@ Important:
 
 Open Issues:
 
-[ ] Change to auth type `pat` to use git token to authenticate so use with service ID api keys is possible.
+[ ] Find a way to store the git token in a secure manner in schematics / terraform cloud. Maybe change list to map key repo url.
 [ ] No reverse proxy when exposing multiple services with oauth proxy.
-[ ] Find a way to store the git token in a secure manner.
+[ ] Service ID creation: Access Rights in IAM
 
 ## TLDR
 
@@ -23,7 +23,10 @@ Prerequisites:
 2. Create an IBM Cloud API Key
 3. Provide the following values in the `terraform.tfvars` file or when prompted on the cli:
    1. `ibmcloud_api_key` - IBM Cloud API Key
-   2. `code_repositories` - URL to the git repository and access token to clone it
+   2. `code_repositories` - URL to the git repositories
+   3. `code_repositories_token` - Access token to the git repositories
+   4. `repository_pipeline_token` - Access token to the git repositories
+   5. `repository_pipeline_catalog_token` - Access token to the git repositories
 
 ```sh
 git clone https://github.com/fabianschwab/ic-ce-mvp-infrastructure.git
@@ -164,21 +167,24 @@ The script also sets up necessary connections between these resources, such as b
 Before you create all the infrastructure you can modify it by providing a few values.
 Most of them have default values and are fine as they are but some needed to be changed.
 
-| Name                        | Description                                                                                                 | Type   | Default                | Sensitive |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------- | ------ | ---------------------- | --------- |
-| ibm_cloud_api_key           | IAM API Key                                                                                                 | string |                        | true      |
-| ibm_region                  | Region and zone the resources should be created in.                                                         | string | eu-de                  |           |
-| resource_group_name         | Name of resource group to provision resources.                                                              | string | development            |           |
-| code_engine_project_name    | Name for the CodeEngine project which holds the applications                                                | string | mvp-development        |           |
-| container_registry_name     | Container registry namespace name which holds the images for the applications                               | string | mvp-images             |           |
-| pg_database_name            | Name of the PostgreSQL database service                                                                     | string | mvp-database           |           |
-| pg_database_endpoint        | Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'. | string | private                |           |
-| toolchain                   | Name of the automation Toolchain                                                                            | string | code-engine-deployment |           |
-| code_repositories           | Information about the code repositories to build                                                            | object |                        |           |
-| repository_pipeline         | Repository which holds the tekton pipeline, trigger and so on                                               | object |                        |           |
-| repository_pipeline_catalog | A collection of tekton pipeline steps which can be added to the pipeline                                    | object |                        |           |
+| Name                              | Description                                                                                                 | Type   | Default                | Sensitive |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------ | ---------------------- | --------- |
+| ibm_cloud_api_key                 | IAM API Key                                                                                                 | string |                        | true      |
+| ibm_region                        | Region and zone the resources should be created in.                                                         | string | eu-de                  |           |
+| resource_group_name               | Name of resource group to provision resources.                                                              | string | development            |           |
+| code_engine_project_name          | Name for the CodeEngine project which holds the applications                                                | string | mvp-development        |           |
+| container_registry_name           | Container registry namespace name which holds the images for the applications                               | string | mvp-images             |           |
+| pg_database_name                  | Name of the PostgreSQL database service                                                                     | string | mvp-database           |           |
+| pg_database_endpoint              | Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'. | string | private                |           |
+| toolchain                         | Name of the automation Toolchain                                                                            | string | code-engine-deployment |           |
+| code_repositories                 | Information about the code repositories to build                                                            | object |                        |           |
+| repository_pipeline_url           | Repository which holds the tekton pipeline, trigger and so on                                               | string |                        |           |
+| repository_pipeline_token         | Access token                                                                                                | string |                        |           |
+| repository_pipeline_catalog_url   | A collection of tekton pipeline steps which can be added to the pipeline                                    | string |                        |           |
+| repository_pipeline_catalog_token | Access token                                                                                                | string |                        |           |
 
 The `ibm_cloud_api_key` is a value which is sensitive and should be provided as a secret. This api key is also used to deploy the application on code engine, so do not delete it after the infrastructure is created.
+It is recommended to create a service id with the rights to create all resources under IAM and use a api key to the service id.
 
 The database is not reachable from outside the cloud account for security reasons. If you want to change this, consider changing the `pg_database_endpoint` variable to `public` or `public-and-private`.
 
@@ -193,7 +199,7 @@ code_repositories = [
     token       = string # Access token
     root_folder = string # Root folder containing the source code
     name        = string # Name identifier for the repository
-    visibility  = string # Repository visibility: "public", "private", or "project"
+    visibility  = string # CodeEngine application visibility: "public", "private", or "project"
   }
 ]
 ```
@@ -247,9 +253,9 @@ The pipeline automatically manages secure properties through the secure-properti
 
 The Tekton pipeline steps and tasks can be customized by modifying the code in the tekton-catalog and tekton-pipeline repositories. To make changes:
 
-1. Fork the tekton-catalog and tekton-pipeline repositories.
-2. Modify the pipeline steps and tasks in your forked repositories as needed.
-3. Update the `repository_url_pipeline` and `repository_url_pipeline_catalog` variables in the terraform script to point to your forked repositories.
+1. Fork the tekton-catalog and/or tekton-pipeline repositories.
+2. Modify the pipeline steps and/or tasks in your forked repositories as needed.
+3. Update the `repository_pipeline_url` and/or `repository_pipeline_catalog_url` variables in the terraform script to point to your forked repositories.
 4. Re-run the terraform script to apply the changes to your pipeline.
 
 This process allows you to tailor the pipeline to your specific needs while maintaining the ability to easily update and manage your infrastructure.

@@ -8,17 +8,17 @@ locals {
   # Others are possible but not implemented because this would increase complexity and is not used ce projects
 
   pipeline_id = (
-    can(regex("^https://github\\.com/", var.repository_pipeline.url)) ? "github" :
-    can(regex("^https://github\\.ibm\\.com/", var.repository_pipeline.url)) ? "integrated" :
-    can(regex("^https://gitlab\\.com/", var.repository_pipeline.url)) ? "gitlab" :
-    can(regex("^https://[^/]+\\.git\\.cloud\\.ibm\\.com/", var.repository_pipeline.url)) ? "hostedgit" : ""
+    can(regex("^https://github\\.com/", var.repository_pipeline_url)) ? "github" :
+    can(regex("^https://github\\.ibm\\.com/", var.repository_pipeline_url)) ? "integrated" :
+    can(regex("^https://gitlab\\.com/", var.repository_pipeline_url)) ? "gitlab" :
+    can(regex("^https://[^/]+\\.git\\.cloud\\.ibm\\.com/", var.repository_pipeline_url)) ? "hostedgit" : ""
   )
 
   catalog_id = (
-    can(regex("^https://github\\.com/", var.repository_pipeline_catalog.url)) ? "github" :
-    can(regex("^https://github\\.ibm\\.com/", var.repository_pipeline_catalog.url)) ? "integrated" :
-    can(regex("^https://gitlab\\.com/", var.repository_pipeline_catalog.url)) ? "gitlab" :
-    can(regex("^https://[^/]+\\.git\\.cloud\\.ibm\\.com/", var.repository_pipeline_catalog.url)) ? "hostedgit" : ""
+    can(regex("^https://github\\.com/", var.repository_pipeline_catalog_url)) ? "github" :
+    can(regex("^https://github\\.ibm\\.com/", var.repository_pipeline_catalog_url)) ? "integrated" :
+    can(regex("^https://gitlab\\.com/", var.repository_pipeline_catalog_url)) ? "gitlab" :
+    can(regex("^https://[^/]+\\.git\\.cloud\\.ibm\\.com/", var.repository_pipeline_catalog_url)) ? "hostedgit" : ""
   )
 }
 
@@ -39,13 +39,13 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_repository" {
   initialization {
     git_id   = local.pipeline_id
     type     = "link"
-    repo_url = var.repository_pipeline.url
+    repo_url = var.repository_pipeline_url
   }
   parameters {
     git_id    = local.pipeline_id
-    repo_url  = var.repository_pipeline.url
+    repo_url  = var.repository_pipeline_url
     auth_type = "pat"
-    api_token = var.repository_pipeline.token
+    api_token = var.repository_pipeline_token
   }
 }
 
@@ -58,13 +58,13 @@ resource "ibm_cd_toolchain_tool_gitlab" "tekton_repository" {
   initialization {
     git_id   = local.pipeline_id
     type     = "link"
-    repo_url = var.repository_pipeline.url
+    repo_url = var.repository_pipeline_url
   }
   parameters {
     git_id    = local.pipeline_id
-    repo_url  = var.repository_pipeline.url
+    repo_url  = var.repository_pipeline_url
     auth_type = "pat"
-    api_token = var.repository_pipeline.token
+    api_token = var.repository_pipeline_token
   }
 }
 
@@ -77,13 +77,13 @@ resource "ibm_cd_toolchain_tool_hostedgit" "tekton_repository" {
   initialization {
     git_id   = local.pipeline_id
     type     = "link"
-    repo_url = var.repository_pipeline.url
+    repo_url = var.repository_pipeline_url
   }
   parameters {
     git_id    = local.pipeline_id
-    repo_url  = var.repository_pipeline.url
+    repo_url  = var.repository_pipeline_url
     auth_type = "pat"
-    api_token = var.repository_pipeline.token
+    api_token = var.repository_pipeline_token
   }
 }
 
@@ -97,13 +97,13 @@ resource "ibm_cd_toolchain_tool_githubconsolidated" "tekton_catalog" {
   initialization {
     git_id   = local.catalog_id
     type     = "link"
-    repo_url = var.repository_pipeline_catalog.url
+    repo_url = var.repository_pipeline_catalog_url
   }
   parameters {
     git_id    = local.catalog_id
-    repo_url  = var.repository_pipeline_catalog.url
+    repo_url  = var.repository_pipeline_catalog_url
     auth_type = "pat"
-    api_token = var.repository_pipeline_catalog.token
+    api_token = var.repository_pipeline_catalog_token
   }
 }
 
@@ -116,13 +116,13 @@ resource "ibm_cd_toolchain_tool_gitlab" "tekton_catalog" {
   initialization {
     git_id   = local.catalog_id
     type     = "link"
-    repo_url = var.repository_pipeline_catalog.url
+    repo_url = var.repository_pipeline_catalog_url
   }
   parameters {
     git_id    = local.catalog_id
-    repo_url  = var.repository_pipeline_catalog.url
+    repo_url  = var.repository_pipeline_catalog_url
     auth_type = "pat"
-    api_token = var.repository_pipeline_catalog.token
+    api_token = var.repository_pipeline_catalog_token
   }
 }
 
@@ -135,12 +135,12 @@ resource "ibm_cd_toolchain_tool_hostedgit" "tekton_catalog" {
   initialization {
     git_id   = local.catalog_id
     type     = "link"
-    repo_url = var.repository_pipeline_catalog.url
+    repo_url = var.repository_pipeline_catalog_url
   }
   parameters {
     git_id    = local.catalog_id
-    repo_url  = var.repository_pipeline_catalog.url
+    repo_url  = var.repository_pipeline_catalog_url
     auth_type = "pat"
-    api_token = var.repository_pipeline_catalog.token
+    api_token = var.repository_pipeline_catalog_token
   }
 }

@@ -45,8 +45,8 @@ variable "pg_database_name" {
 }
 
 variable "pg_database_endpoint" {
-  description = "Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'."
   type        = string
+  description = "Specify the visibility of the database endpoint. Allowed values: 'private', 'public', 'public-and-private'."
   default     = "private"
   validation {
     condition     = contains(["private", "public", "public-and-private"], var.pg_database_endpoint)
@@ -83,22 +83,31 @@ variable "code_repositories" {
   description = "List of services to deploy. Consolidate the `Readme.md` for structure of the list and containing object if unsure."
 }
 
-variable "repository_pipeline" {
-  type = object({
-    url   = string
-    token = string
-  })
-  default = { url = "https://github.com/fabianschwab/ic-ce-tekton-pipeline.git", token = "" }
-
-  description = "URL of the pipeline repository. See `Readme.md` for object info."
+variable "code_repositories_token" {
+  type        = map(string)
+  description = "Map of repository URLs to their access tokens. The URL is the key, and the token is the value."
 }
 
-variable "repository_pipeline_catalog" {
-  type = object({
-    url   = string
-    token = string
-  })
-  default = { url = "https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git", token = "" }
+variable "repository_pipeline_url" {
+  type        = string
+  description = "URL of the pipeline repository."
+  default     = "https://github.com/fabianschwab/ic-ce-tekton-pipeline.git"
+}
 
-  description = "URL of the tasks repository of the pipeline. See `Readme.md` for object info."
+variable "repository_pipeline_token" {
+  type        = string
+  description = "Access token for the pipeline repository."
+  sensitive   = true
+}
+
+variable "repository_pipeline_catalog_url" {
+  type        = string
+  description = "URL of the tasks repository of the pipeline."
+  default     = "https://github.com/fabianschwab/ic-ce-tekton-pipeline-catalog.git"
+}
+
+variable "repository_pipeline_catalog_token" {
+  type        = string
+  description = "Access token for the tasks repository."
+  sensitive   = true
 }
