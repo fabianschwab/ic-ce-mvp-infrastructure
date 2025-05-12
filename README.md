@@ -7,7 +7,6 @@ Important:
 
 Open Issues:
 
-[ ] Find a way to store the git token in a secure manner in schematics / terraform cloud. Maybe change list to map key repo url.
 [ ] No reverse proxy when exposing multiple services with oauth proxy.
 [ ] Service ID creation: Access Rights in IAM
 
